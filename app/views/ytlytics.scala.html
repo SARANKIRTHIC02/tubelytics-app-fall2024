@@ -1,0 +1,13 @@
+@()
+
+@main("YT Lytics") {
+<section id="top">
+    <div class="wrapper">
+        <h1>Welcome to YT Lytics</h1>
+        <form action="@routes.HomeController.ytlytics" method="get">
+            <input name="query" placeholder="Enter search terms" required>
+            <button type="submit">Go!</button>
+        </form>
+    </div>
+</section>
+}

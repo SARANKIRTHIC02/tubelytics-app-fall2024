@@ -1,6 +1,7 @@
 package controllers;
 
 import play.mvc.*;
+import views.html.ytlytics;
 
 /**
  * This controller contains an action to handle HTTP requests
@@ -16,6 +17,10 @@ public class HomeController extends Controller {
      */
     public Result index() {
         return ok(views.html.index.render());
+    }
+
+    public Result ytlytics() {
+        return ok(ytlytics.render());
     }
 
 }
