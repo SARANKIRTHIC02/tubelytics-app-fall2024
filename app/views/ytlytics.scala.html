@@ -1,13 +1,33 @@
-@()
+@import model.ytSearch
 
-@main("YT Lytics") {
+@(model: ytSearch)
+
+@main(model.getTitle()) {
 <section id="top">
     <div class="wrapper">
-        <h1>Welcome to YT Lytics</h1>
-        <form action="@routes.HomeController.ytlytics" method="get">
+        <h1>Welcome to @model.getTitle()</h1>
+        <p>Session ID: @model.getSessionId()</p>
+
+        <form method="get">
             <input name="query" placeholder="Enter search terms" required>
+            <input type="hidden" name="sessionId" value="@model.getSessionId()">
             <button type="submit">Go!</button>
         </form>
+    </div>
+</section>
+
+<section id="results">
+    <div class="wrapper">
+        <h2>Search Results:</h2>
+        @if(model.getResults().isEmpty()) {
+        <p>No results found. Please enter a search term and try again.</p>
+        } else {
+        <ul>
+            @for(result <- model.getResults()) {
+            <li>@result</li>
+            }
+        </ul>
+        }
     </div>
 </section>
 }

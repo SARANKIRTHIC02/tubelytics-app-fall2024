@@ -1,7 +1,11 @@
 package controllers;
 
 import play.mvc.*;
-import views.html.ytlytics;
+
+import java.util.*;
+
+import model.ytSearch;
+
 
 /**
  * This controller contains an action to handle HTTP requests
@@ -19,8 +23,27 @@ public class HomeController extends Controller {
         return ok(views.html.index.render());
     }
 
-    public Result ytlytics() {
-        return ok(ytlytics.render());
+    public Result ytlytics(Optional<String> query) {
+        String sessionId = UUID.randomUUID().toString();
+        String searchQuery = query.orElse("");
+        List<String> results = fetchResults(searchQuery);
+        ytSearch model = new ytSearch("YT Lytics", results, sessionId);
+        return ok(views.html.ytlytics.render(model));
     }
+
+
+    private List<String> fetchResults(String query) {
+        List<String> results = new ArrayList<>();
+
+        if (!query.isEmpty()) {
+                results.add("Dummy Result " + 1 + " for query: " + query);
+
+        } else {
+            results.add("No results found.");
+        }
+
+        return results;
+    }
+
 
 }
