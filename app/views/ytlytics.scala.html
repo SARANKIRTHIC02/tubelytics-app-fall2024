@@ -1,33 +1,43 @@
-@import model.ytSearch
+@import model.SearchResponseList
+@(models: SearchResponseList)
 
-@(model: ytSearch)
+@main("YTLytics") {
+    <section id="top">
+        <div class="wrapper">
+            <h1>Welcome to YTLytics</h1>
+            <form method="get">
+                <input name="query" placeholder="Enter search terms" required>
+                <input type="hidden" name="sessionId" value="@models.getSessionID">
+                <button type="submit">Go!</button>
+            </form>
+        </div>
+    </section>
 
-@main(model.getTitle()) {
-<section id="top">
-    <div class="wrapper">
-        <h1>Welcome to @model.getTitle()</h1>
-        <p>Session ID: @model.getSessionId()</p>
-
-        <form method="get">
-            <input name="query" placeholder="Enter search terms" required>
-            <input type="hidden" name="sessionId" value="@model.getSessionId()">
-            <button type="submit">Go!</button>
-        </form>
-    </div>
-</section>
-
-<section id="results">
-    <div class="wrapper">
-        <h2>Search Results:</h2>
-        @if(model.getResults().isEmpty()) {
-        <p>No results found. Please enter a search term and try again.</p>
-        } else {
-        <ul>
-            @for(result <- model.getResults()) {
-            <li>@result</li>
+    @if(!models.getRequestModels().isEmpty()) {
+        <section id="results">
+            <div class="wrapper">
+            @for(searchReq <- models.getRequestModels()) {
+                <div style="margin-top: 40px;">
+                @if(!searchReq.getResults().isEmpty) {
+                    <h2>Search Results for term: @searchReq.getTitle()</h2>
+                    <ol>
+                    @for(result <- searchReq.getResults()) {
+                        <li class="result-item">
+                            <div class="result-content">
+                                <div class="text-content">
+                                    <p><b>Title:</b> <a href="@result.getVideoUrl" target="_blank">@result.getTitle</a>
+                                    <b>Channel:</b> <a href="@routes.HomeController.channelVideos(result.getChannelId())" target="_blank">@result.getChannelTitle</a>
+                                        <b>Description:</b> @result.getDescription</p>
+                                </div>
+                                <img src="@result.getThumbnailUrl" alt="Video Thumbnail" class="thumbnail">
+                            </div>
+                        </li>
+                    }
+                    </ol>
+                }
+                </div>
             }
-        </ul>
-        }
-    </div>
-</section>
+            </div>
+        </section>
+    }
 }
