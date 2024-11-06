@@ -28,4 +28,18 @@ public class TubelyticService {
         return results;
     }
 
+    public static ChannelProfileResult fetchChannelDetails(String channelID){
+        try {
+            YouTubeService youTubeService=new YouTubeService();
+            ChannelProfileResult channelProfile = youTubeService.getChannelProfile(channelID);
+            return channelProfile;
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error retrieving channel data.");
+        } catch (GeneralSecurityException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
 }
