@@ -22,18 +22,18 @@
                 <div style="margin-top: 40px;">
                     @if(!searchReq.getResults().isEmpty) {
                         <h2>Search Results for term: @searchReq.getTitle()</h2>
-                        <ul>
+                        <ol>
                         @for(result <- searchReq.getResults()) {
+                            <li>
                             <div style="margin-top: 20px;">
-                                <h3>
-                                    <a href=@result.getVideoUrl target="_blank">@result.getTitle</a>
-                                </h3>
-                                <p>Channel: <a href= @result.getChannelId target="_blank">@result.getChannelTitle</a></p>
-                                <p>Description: @result.getDescription</p>
-                                <img src="@result.getThumbnailUrl" alt="Video Thumbnail" style="width: 120px; height: auto;" />
+                                <p><b>Title: </b> <a href=@result.getVideoUrl target="_blank">@result.getTitle</a>,
+                                    <b>Channel: </b><a href="@routes.HomeController.channelVideos(result.getChannelId())" target="_blank">@result.getChannelTitle</a>,
+                                <b>Description: </b> @result.getDescription,
+                                    <img src="@result.getThumbnailUrl" alt="Video Thumbnail" style="width: 120px; height: auto;" /></p>
                             </div>
+                            </li>
                         }
-                        </ul>
+                        </ol>
                     }
                 </div>
             }
