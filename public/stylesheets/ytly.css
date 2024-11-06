@@ -16,10 +16,19 @@ body {
 
 #top {
     text-align: center;
+    margin-bottom: 20px; /* Adds space only if there are results */
 }
 
 h1 {
     color: #333;
+}
+
+h2{
+    margin-left: 30px;
+}
+
+#channelName{
+    margin-left: 45%;
 }
 
 input {
@@ -43,4 +52,39 @@ button {
 
 button:hover {
     background-color: #0056b3;
+}
+
+
+#results {
+    margin-top: 20px;
+    margin-left: 30px;
+}
+
+.result-item {
+    margin-bottom: 5px;
+    margin-left: 10px;
+    padding-bottom: 5px;
+    #border-bottom: 1px solid #e0e0e0;
+}
+
+.result-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.text-content {
+    flex: 1;
+    padding-right: 20px;
+}
+
+.thumbnail {
+    width: 80px;
+    height: 80px;
+    border-radius: 4px;
+    object-fit: cover;
+    margin-right: 100px;
+}
+#wordStat{
+margin-left:30px;
 }
