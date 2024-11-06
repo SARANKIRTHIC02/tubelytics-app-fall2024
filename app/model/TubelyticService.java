@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class TubelyticService {
     public static  List<VideoSearchResult> fetchResults(String query) {
@@ -41,5 +42,27 @@ public class TubelyticService {
         }
     }
 
+    public static Map<String, Long> wordStatistics(List<VideoSearchResult> results) {
+        List<String> allWords = results.stream()
+                .map(VideoSearchResult::getDescription)
+                .flatMap(description -> Arrays.stream(description.split("\\W+")))
+                .map(String::toLowerCase)
+                .filter(word -> !word.isEmpty())
+                .collect(Collectors.toList());
 
-}
+        Map<String, Long> wordFrequency = allWords.stream()
+                .collect(Collectors.groupingBy(word -> word, Collectors.counting()));
+
+        return wordFrequency.entrySet()
+                .stream()
+                .sorted((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()))
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new
+                ));
+    }}
+
+
+

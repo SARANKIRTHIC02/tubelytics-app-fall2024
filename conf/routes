@@ -11,3 +11,5 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 GET     /ytlytics          controllers.HomeController.ytlytics(query: java.util.Optional[String])
 
 GET     /ytlytics/channel/:channelId      controllers.HomeController.channelVideos(channelId: String)
+GET     /wordStatistics/:searchQuery controllers.HomeController.wordStats(searchQuery)
+
