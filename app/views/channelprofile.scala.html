@@ -5,32 +5,36 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title></title>
+        <title>Channel Profile - @channel.getChannelTitle()</title>
+        <link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/channel.css")">
     </head>
     <body>
-        <h1>Channel Name: @channel.getChannelTitle</h1>
-        <p><b>Description:</b> @channel.getChannelDescription()</p>
-        <p><b>Subscribers:</b> @channel.getSubscriberCount()</p>
-        <img src="@channel.getChannelThumbnailUrl()" alt="Channel Thumbnail" />
+        <div id="wrapper">
+            <h1 id="channelName">Channel Name: @channel.getChannelTitle()</h1>
+            <img src="@channel.getChannelThumbnailUrl()" alt="Channel Thumbnail" class="channel-thumbnail" />
+            <p><b>Description:</b> @channel.getChannelDescription()</p>
+            <p><b>Subscribers:</b> @channel.getSubscriberCount()</p>
 
-        <h2>Channel Videos</h2>
-        @if(channel.getRecentVideos().isEmpty()) {
-            <p>No recent videos found.</p>
-        } else {
-            <div>
-                <ol>
-            @for(video <- channel.getRecentVideos()) {
-                <li>
-                <div style="margin-top: 20px;">
-                    <p> <b>Title: </b> <a href="@video.getVideoUrl()" target="_blank">@video.getTitle()</a>,
-                    <b>Description: </b>@video.getDescription(),
-                    <img src="@video.getThumbnailUrl()" alt="Video Thumbnail" style="width: 120px; height: auto;" />
-                </p>
+            <h2>Channel Videos</h2>
+            @if(channel.getRecentVideos().isEmpty()) {
+                <p>No recent videos found.</p>
+            } else {
+                <div id="results">
+                    <ol>
+                    @for(video <- channel.getRecentVideos()) {
+                        <li class="result-item">
+                            <div class="result-content">
+                                <div class="text-content">
+                                    <p><b>Title:</b> <a href="@video.getVideoUrl()" target="_blank">@video.getTitle()</a>
+                                    <b>Description:</b> @video.getDescription()</p>
+                                </div>
+                                <img src="@video.getThumbnailUrl()" alt="Video Thumbnail" class="thumbnail">
+                            </div>
+                        </li>
+                    }
+                    </ol>
                 </div>
-                </li>
             }
-                </ol>
-            </div>
-        }
+        </div>
     </body>
 </html>

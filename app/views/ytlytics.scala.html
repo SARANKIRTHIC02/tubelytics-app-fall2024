@@ -13,31 +13,31 @@
         </div>
     </section>
 
-    <section id="results">
-        <div class="wrapper">
-        @if(models.getRequestModels().isEmpty()) {
-            <p>No results found. Please enter a search term and try again.</p>
-        } else {
+    @if(!models.getRequestModels().isEmpty()) {
+        <section id="results">
+            <div class="wrapper">
             @for(searchReq <- models.getRequestModels()) {
                 <div style="margin-top: 40px;">
-                    @if(!searchReq.getResults().isEmpty) {
-                        <h2>Search Results for term: @searchReq.getTitle()</h2>
-                        <ol>
-                        @for(result <- searchReq.getResults()) {
-                            <li>
-                            <div style="margin-top: 20px;">
-                                <p><b>Title: </b> <a href=@result.getVideoUrl target="_blank">@result.getTitle</a>,
-                                    <b>Channel: </b><a href="@routes.HomeController.channelVideos(result.getChannelId())" target="_blank">@result.getChannelTitle</a>,
-                                <b>Description: </b> @result.getDescription,
-                                    <img src="@result.getThumbnailUrl" alt="Video Thumbnail" style="width: 120px; height: auto;" /></p>
+                @if(!searchReq.getResults().isEmpty) {
+                    <h2>Search Results for term: @searchReq.getTitle()</h2>
+                    <ol>
+                    @for(result <- searchReq.getResults()) {
+                        <li class="result-item">
+                            <div class="result-content">
+                                <div class="text-content">
+                                    <p><b>Title:</b> <a href="@result.getVideoUrl" target="_blank">@result.getTitle</a>
+                                    <b>Channel:</b> <a href="@routes.HomeController.channelVideos(result.getChannelId())" target="_blank">@result.getChannelTitle</a>
+                                        <b>Description:</b> @result.getDescription</p>
+                                </div>
+                                <img src="@result.getThumbnailUrl" alt="Video Thumbnail" class="thumbnail">
                             </div>
-                            </li>
-                        }
-                        </ol>
+                        </li>
                     }
+                    </ol>
+                }
                 </div>
             }
-        }
-        </div>
-    </section>
+            </div>
+        </section>
+    }
 }
