@@ -36,7 +36,7 @@ public class YouTubeService {
         YouTube.Search.List searchRequest = youtube.search().list("snippet");
         searchRequest.setQ(query);
         searchRequest.setType("video");
-        searchRequest.setMaxResults(5L);
+        searchRequest.setMaxResults(10L);
         searchRequest.setOrder("date");
         searchRequest.setKey(API_KEY);
 
@@ -68,6 +68,40 @@ public class YouTubeService {
             return new ArrayList<>();
         }
         return results;
+    }
+
+    public ChannelProfileResult getChannelProfile(String channelId) throws IOException {
+
+        YouTube.Channels.List channelRequest = youtube.channels().list("snippet,statistics");
+        channelRequest.setId(channelId);
+        channelRequest.setKey(API_KEY);
+
+        ChannelListResponse channelResponse = channelRequest.execute();
+        List<Channel> channels = channelResponse.getItems();
+        if (channels.isEmpty()) {
+            System.out.println("No channel found with ID: " + channelId);
+            return null;
+        }
+        Channel channel = channels.get(0);
+        System.out.println("Channel Description: "+channel.getSnippet().getDescription());
+
+        YouTube.Search.List videoRequest = youtube.search().list("snippet");
+        videoRequest.setChannelId(channelId);
+        videoRequest.setOrder("date");     // Order by newest first
+        videoRequest.setMaxResults(10L);   // Get the 10 latest videos
+        videoRequest.setType("video");     // Only videos
+        videoRequest.setKey(API_KEY);
+
+        List<VideoSearchResult> recentVideos = getVideoSearchResults(videoRequest);
+
+        return new ChannelProfileResult(
+                channelId,
+                channel.getSnippet().getTitle(),
+                channel.getSnippet().getDescription(),
+                channel.getStatistics().getSubscriberCount().longValue(),
+                channel.getSnippet().getThumbnails().getDefault().getUrl(),
+                recentVideos
+        );
     }
 
 }
