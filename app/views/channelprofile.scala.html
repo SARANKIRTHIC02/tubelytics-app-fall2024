@@ -1,0 +1,36 @@
+@import model.ChannelProfileResult
+@(channel: ChannelProfileResult)
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title></title>
+    </head>
+    <body>
+        <h1>Channel Name: @channel.getChannelTitle</h1>
+        <p><b>Description:</b> @channel.getChannelDescription()</p>
+        <p><b>Subscribers:</b> @channel.getSubscriberCount()</p>
+        <img src="@channel.getChannelThumbnailUrl()" alt="Channel Thumbnail" />
+
+        <h2>Channel Videos</h2>
+        @if(channel.getRecentVideos().isEmpty()) {
+            <p>No recent videos found.</p>
+        } else {
+            <div>
+                <ol>
+            @for(video <- channel.getRecentVideos()) {
+                <li>
+                <div style="margin-top: 20px;">
+                    <p> <b>Title: </b> <a href="@video.getVideoUrl()" target="_blank">@video.getTitle()</a>,
+                    <b>Description: </b>@video.getDescription(),
+                    <img src="@video.getThumbnailUrl()" alt="Video Thumbnail" style="width: 120px; height: auto;" />
+                </p>
+                </div>
+                </li>
+            }
+                </ol>
+            </div>
+        }
+    </body>
+</html>
