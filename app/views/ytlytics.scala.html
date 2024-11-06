@@ -1,5 +1,5 @@
 @import model.SearchResponseList
-@(models: SearchResponseList)
+@(models: SearchResponseList, wordsFiltered: Map[String, Long], searchQuery: String)
 
 @main("YTLytics") {
     <section id="top">
@@ -20,6 +20,8 @@
                 <div style="margin-top: 40px;">
                 @if(!searchReq.getResults().isEmpty) {
                     <h2>Search Results for term: @searchReq.getTitle()</h2>
+                    <p id="wordStat"><a href="@routes.HomeController.wordStats(searchReq.getTitle())">More Stats</a></p>
+
                     <ol>
                     @for(result <- searchReq.getResults()) {
                         <li class="result-item">
@@ -34,7 +36,7 @@
                         </li>
                     }
                     </ol>
-                }
+                    }
                 </div>
             }
             </div>

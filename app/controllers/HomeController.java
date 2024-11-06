@@ -6,6 +6,7 @@ import play.mvc.*;
 import java.util.Optional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class HomeController extends Controller {
@@ -22,9 +23,15 @@ public class HomeController extends Controller {
         String searchQuery = query.orElse("");
 
         List<VideoSearchResult> newResults = TubelyticService.fetchResults(searchQuery);
-        SearchResponse model = new SearchResponse(searchQuery, newResults);
+        Map<String, Long> wordsFiltered = TubelyticService.wordStatistics(newResults);
+        System.out.println(wordsFiltered);
+        List<VideoSearchResult> limitedResults = newResults.stream()
+                .limit(10)
+                .collect(Collectors.toList());
+
+        SearchResponse model = new SearchResponse(searchQuery, limitedResults);
         accumulatedResults.getRequestModels().add(0,model);
-        return ok(views.html.ytlytics.render(accumulatedResults));
+        return ok(views.html.ytlytics.render(accumulatedResults, wordsFiltered, searchQuery));
     }
 
     public Result channelVideos(String channelId) {
@@ -35,6 +42,12 @@ public class HomeController extends Controller {
         }
 
         return ok(views.html.channelprofile.render(channelProfileInfo));
+    }
+
+    public Result wordStats(String searchQuery) {
+        List<VideoSearchResult> newResults = TubelyticService.fetchResults(searchQuery);
+        Map<String, Long> wordsFiltered = TubelyticService.wordStatistics(newResults);
+        return ok(views.html.wordStats.render(wordsFiltered));
     }
 
 
