@@ -8,15 +8,17 @@ public class ChannelProfileResult {
     private String channelDescription;
     private Long subscriberCount;
     private String channelThumbnailUrl;
+    private String country;
     private List<VideoSearchResult> recentVideos;
 
     public ChannelProfileResult(String channelId, String channelTitle, String channelDescription, Long subscriberCount,
-                                String channelThumbnailUrl, List<VideoSearchResult> recentVideos) {
+                                String channelThumbnailUrl, String country, List<VideoSearchResult> recentVideos) {
         this.channelId = channelId;
         this.channelTitle = channelTitle;
         this.channelDescription = channelDescription;
         this.subscriberCount = subscriberCount;
         this.channelThumbnailUrl = channelThumbnailUrl;
+        this.country = country;
         this.recentVideos = recentVideos;
     }
 
@@ -41,8 +43,13 @@ public class ChannelProfileResult {
         return channelThumbnailUrl;
     }
 
+
     public List<VideoSearchResult> getRecentVideos() {
         return recentVideos;
+    }
+
+    public String getCountry(){
+        return country;
     }
 
     @Override
@@ -53,6 +60,7 @@ public class ChannelProfileResult {
                 ", channelDescription='" + channelDescription + '\'' +
                 ", subscriberCount=" + subscriberCount +
                 ", channelThumbnailUrl='" + channelThumbnailUrl + '\'' +
+                ", channelThumbnailUrl='" + channelThumbnailUrl + '\''+
                 ", recentVideos=" + recentVideos +
                 '}';
     }
