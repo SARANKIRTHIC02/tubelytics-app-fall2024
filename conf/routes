@@ -9,3 +9,5 @@ GET     /                           controllers.HomeController.index()
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
 
 GET     /ytlytics          controllers.HomeController.ytlytics(query: java.util.Optional[String])
+
+GET     /ytlytics/channel/:channelId      controllers.HomeController.channelVideos(channelId: String)
