@@ -1,12 +1,15 @@
 package model;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class TubelyticService {
     public static  List<VideoSearchResult> fetchResults(String query) {
+        query= URLEncoder.encode(query, StandardCharsets.UTF_8);
         List<VideoSearchResult> results= new ArrayList<>();
 
         if (!query.isEmpty()) {
@@ -16,8 +19,6 @@ public class TubelyticService {
             } catch (IOException | InterruptedException e) {
                 throw new RuntimeException(e);
             }
-
-
         } else {
             results=Collections.emptyList();
         }
@@ -29,9 +30,7 @@ public class TubelyticService {
         try {
             ChannelProfileResult channelProfile = YouTubeService.getChannelProfile(channelID);
             return channelProfile;
-        } catch (IOException e) {
-            throw new RuntimeException("Error retrieving channel data.");
-        }  catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
