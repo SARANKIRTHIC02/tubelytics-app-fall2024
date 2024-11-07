@@ -8,7 +8,6 @@ import java.util.Optional;
 import java.util.*;
 import java.util.stream.Collectors;
 
-
 public class HomeController extends Controller {
 
     public SearchResponseList accumulatedResults=new SearchResponseList(new ArrayList<>(),UUID.randomUUID().toString());
@@ -44,11 +43,19 @@ public class HomeController extends Controller {
         return ok(views.html.channelprofile.render(channelProfileInfo));
     }
 
+    public Result tags(String videoID){
+        ChannelProfileResult channelProfileInfo = TubelyticService.fetchChannelDetails(videoID);
+
+        if (channelProfileInfo == null) {
+            return notFound("Channel not found with ID: " + videoID);
+        }
+
+        return ok(views.html.channelprofile.render(channelProfileInfo));
+    }
     public Result wordStats(String searchQuery) {
         List<VideoSearchResult> newResults = TubelyticService.fetchResults(searchQuery);
         Map<String, Long> wordsFiltered = TubelyticService.wordStatistics(newResults);
         return ok(views.html.wordStats.render(wordsFiltered));
     }
-
 
 }
