@@ -13,9 +13,7 @@ public class TubelyticService {
             try {
                 System.out.println("Line 49");
                 results= YouTubeService.searchVideosBasedOnQuery(query);
-            }  catch (IOException e) {
-                throw new RuntimeException(e);
-            } catch (InterruptedException e) {
+            } catch (IOException | InterruptedException e) {
                 throw new RuntimeException(e);
             }
 
@@ -32,7 +30,6 @@ public class TubelyticService {
             ChannelProfileResult channelProfile = YouTubeService.getChannelProfile(channelID);
             return channelProfile;
         } catch (IOException e) {
-            e.printStackTrace();
             throw new RuntimeException("Error retrieving channel data.");
         }  catch (InterruptedException e) {
             throw new RuntimeException(e);
