@@ -18,7 +18,7 @@
             <div class="wrapper">
             @for(searchReq <- models.getRequestModels()) {
                 <div style="margin-top: 40px;">
-                @if(!searchReq.getResults().isEmpty) {
+                @if(!searchReq.getResults().isEmpty()) {
                     <h2>Search Results for term: @searchReq.getTitle()</h2>
                     <p id="wordStat"><a href="@routes.HomeController.wordStats(searchReq.getTitle())" target="_blank">Word Stats</a></p>
                     <ol>
@@ -33,11 +33,6 @@
                                         @for(tag <- result.getTags) {
                                         <a href="@routes.HomeController.taglytics(tag)" target="_blank">@tag</a>
                                         }
-                                    </p>
-
-
-
-
                                     </p>
                                 </div>
                                 <img src="@result.getThumbnailUrl" alt="Video Thumbnail" class="thumbnail">

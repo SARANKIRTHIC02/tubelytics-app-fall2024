@@ -26,7 +26,6 @@ public class YouTubeService {
 
         List<VideoSearchResult> results = parseVideoResults(response);
 
-        // Fetch tags for the videos
         List<String> videoIds = getVideoIds(results);
         fetchVideoTags(videoIds, results);
 
@@ -67,8 +66,6 @@ public class YouTubeService {
         JsonNode response = HttpUtils.sendRequest(apiUrl);
 
         List<VideoSearchResult> results = parseVideoResults(response);
-
-        // Fetch tags for the recent videos
         List<String> videoIds = getVideoIds(results);
         fetchVideoTags(videoIds, results);
 
@@ -88,7 +85,7 @@ public class YouTubeService {
                     snippet.get("channelId").asText(),
                     snippet.get("channelTitle").asText(),
                     snippet.get("publishedAt").asText(),
-                    null  // Tags will be added later
+                    null
             ));
         }
         return results;
@@ -99,27 +96,21 @@ public class YouTubeService {
     }
 
     private static void fetchVideoTags(List<String> videoIds, List<VideoSearchResult> results) throws IOException, InterruptedException {
-        // Construct the API URL to fetch video details including tags
         String apiUrl = String.format("%s%s&id=%s&key=%s",
                 BASE_URL, VIDEOS_ENDPOINT, String.join(",", videoIds), API_KEY);
 
         JsonNode videoDetailsResponse = HttpUtils.sendRequest(apiUrl);
         System.out.println(videoDetailsResponse);
 
-        // Map tags to the corresponding VideoSearchResult object
         for (JsonNode video : videoDetailsResponse.get("items")) {
             String videoId = video.get("id").asText();
             JsonNode tagsNode = video.get("snippet").get("tags");
-
-            // Convert JSON array of tags to a list
             List<String> tags = new ArrayList<>();
             if (tagsNode != null) {
                 for (JsonNode tag : tagsNode) {
                     tags.add(tag.asText());
                 }
             }
-
-            // Add tags to the appropriate VideoSearchResult
             for (VideoSearchResult result : results) {
                 if (result.getVideoId().equals(videoId)) {
                     result.setTags(tags);
