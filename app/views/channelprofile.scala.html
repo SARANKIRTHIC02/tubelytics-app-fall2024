@@ -27,7 +27,12 @@
                             <div class="result-content">
                                 <div class="text-content">
                                     <p><b>Title:</b> <a href="@video.getVideoUrl()" target="_blank">@video.getTitle()</a>
-                                    <b>Description:</b> @video.getDescription()</p>
+                                    <b>Description:</b> @video.getDescription()
+                                    <b>Tags: </b>
+                                    @for(tag <- video.getTags()){
+                                        <a href="@routes.HomeController.taglytics(tag)" target="_blank">@tag</a>
+                                    }
+                                </p>
                                 </div>
                                 <img src="@video.getThumbnailUrl()" alt="Video Thumbnail" class="thumbnail">
                             </div>
