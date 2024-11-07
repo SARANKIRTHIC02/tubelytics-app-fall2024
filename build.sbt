@@ -15,3 +15,6 @@ libraryDependencies ++= Seq(
   "com.google.apis" % "google-api-services-youtube" % "v3-rev222-1.25.0",
   "com.google.http-client" % "google-http-client-jackson2" % "1.34.2"
 )
+
+libraryDependencies += "org.mockito" % "mockito-core" % "5.2.0" % Test
+libraryDependencies += "org.mockito" % "mockito-junit-jupiter" % "5.2.0" % Test

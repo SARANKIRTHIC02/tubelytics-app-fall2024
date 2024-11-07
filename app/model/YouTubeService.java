@@ -1,108 +1,77 @@
 package model;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.youtube.YouTube;
-import com.google.api.services.youtube.model.*;
+import Util.HttpUtils;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
 import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
-
 public class YouTubeService {
+    private static final Config config = ConfigFactory.load();
+    private static final String BASE_URL = config.getString("youtube.base-url");
+    private static final String API_KEY = config.getString("youtube.api-key");
+    private static final String SEARCH_ENDPOINT=config.getString("youtube.search-endpoint");
+    private static final String CHANNEL_ENDPOINT=config.getString("youtube.channel-endpoint");
 
-    private static final String APPLICATION_NAME = "tubelytics";
-    private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
-    private static final String API_KEY;
+    public static List<VideoSearchResult> searchVideosBasedOnQuery(String query) throws IOException, InterruptedException {
+        String apiUrl = String.format("%s%s&q=%s&type=video&maxResults=%d&order=date&key=%s",
+                BASE_URL,SEARCH_ENDPOINT, query, 50, API_KEY);
+        JsonNode response = HttpUtils.sendRequest(apiUrl);
 
-    static{
-        Config config = ConfigFactory.load();
-        API_KEY = config.getString("youtube.api.key");
+        return parseVideoResults(response);
     }
 
-    private final YouTube youtube;
+    public static ChannelProfileResult getChannelProfile(String channelId) throws IOException, InterruptedException {
+        String apiUrl = String.format("%s%s&id=%s&key=%s", BASE_URL,CHANNEL_ENDPOINT, channelId, API_KEY);
+        JsonNode response = HttpUtils.sendRequest(apiUrl);
 
-    public YouTubeService() throws GeneralSecurityException, IOException {
-        this.youtube = new YouTube.Builder(
-                GoogleNetHttpTransport.newTrustedTransport(),
-                JSON_FACTORY,
-                null
-        ).setApplicationName(APPLICATION_NAME).build();
-    }
-    public List<VideoSearchResult> searchVideosInfo(String query) throws IOException {
-        YouTube.Search.List searchRequest = youtube.search().list("snippet");
-        searchRequest.setQ(query);
-        searchRequest.setType("video");
-        searchRequest.setMaxResults(10L);
-        searchRequest.setOrder("date");
-        searchRequest.setKey(API_KEY);
-
-        return getVideoSearchResults(searchRequest);
-    }
-
-    private List<VideoSearchResult> getVideoSearchResults(YouTube.Search.List searchRequest) throws IOException {
-        SearchListResponse searchResponse = searchRequest.execute();
-
-        List<String> videoIds = new ArrayList<>();
-        List<VideoSearchResult> results = new ArrayList<>();
-
-        for (SearchResult item : searchResponse.getItems()) {
-            String videoId = item.getId().getVideoId();
-            videoIds.add(videoId);
-            results.add(new VideoSearchResult(
-                    videoId,
-                    item.getSnippet().getTitle(),
-                    item.getSnippet().getDescription(),
-                    item.getSnippet().getThumbnails().getDefault().getUrl(),
-                    item.getSnippet().getChannelId(),
-                    item.getSnippet().getChannelTitle(),
-                    item.getSnippet().getPublishedAt().toString(),
-                    null// TODO Placeholder for tags
-            ));
-        }
-
-        if (videoIds.isEmpty()) {
-            return new ArrayList<>();
-        }
-        return results;
-    }
-
-    public ChannelProfileResult getChannelProfile(String channelId) throws IOException {
-
-        YouTube.Channels.List channelRequest = youtube.channels().list("snippet,statistics");
-        channelRequest.setId(channelId);
-        channelRequest.setKey(API_KEY);
-
-        ChannelListResponse channelResponse = channelRequest.execute();
-        List<Channel> channels = channelResponse.getItems();
-        if (channels.isEmpty()) {
+        if (!response.has("items") || response.get("items").isEmpty()) {
             System.out.println("No channel found with ID: " + channelId);
             return null;
         }
-        Channel channel = channels.get(0);
-        System.out.println("Channel Description: "+channel.getSnippet().getDescription());
 
-        YouTube.Search.List videoRequest = youtube.search().list("snippet");
-        videoRequest.setChannelId(channelId);
-        videoRequest.setOrder("date");     // Order by newest first
-        videoRequest.setMaxResults(10L);   // Get the 10 latest videos
-        videoRequest.setType("video");     // Only videos
-        videoRequest.setKey(API_KEY);
+        JsonNode channel = response.get("items").get(0);
+        JsonNode snippet = channel.get("snippet");
+        JsonNode statistics = channel.get("statistics");
 
-        List<VideoSearchResult> recentVideos = getVideoSearchResults(videoRequest);
+        List<VideoSearchResult> recentVideos = getChannelRecentVideos(channelId);
 
         return new ChannelProfileResult(
                 channelId,
-                channel.getSnippet().getTitle(),
-                channel.getSnippet().getDescription(),
-                channel.getStatistics().getSubscriberCount().longValue(),
-                channel.getSnippet().getThumbnails().getDefault().getUrl(),
+                snippet.get("title").asText(),
+                snippet.get("description").asText(),
+                statistics.get("subscriberCount").asLong(),
+                snippet.get("thumbnails").get("default").get("url").asText(),
+                snippet.get("country")==null?"-":snippet.get("country").asText(),
                 recentVideos
         );
     }
 
-}
+    private static List<VideoSearchResult> getChannelRecentVideos(String channelId) throws IOException, InterruptedException {
+        String apiUrl = String.format("%s%s&channelId=%s&type=video&order=date&maxResults=%d&key=%s",
+                BASE_URL, SEARCH_ENDPOINT, channelId, 10, API_KEY);
+        JsonNode response = HttpUtils.sendRequest(apiUrl);
 
+        return parseVideoResults(response);
+    }
+
+    private static List<VideoSearchResult> parseVideoResults(JsonNode response) {
+        List<VideoSearchResult> results = new ArrayList<>();
+        for (JsonNode item : response.get("items")) {
+            JsonNode snippet = item.get("snippet");
+            String videoId = item.get("id").get("videoId").asText();
+            results.add(new VideoSearchResult(
+                    videoId,
+                    snippet.get("title").asText(),
+                    snippet.get("description").asText(),
+                    snippet.get("thumbnails").get("default").get("url").asText(),
+                    snippet.get("channelId").asText(),
+                    snippet.get("channelTitle").asText(),
+                    snippet.get("publishedAt").asText(),
+                    null  // TODO tags
+            ));
+        }
+        return results;
+    }
+}

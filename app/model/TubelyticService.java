@@ -1,7 +1,6 @@
 package model;
 
 import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -13,11 +12,8 @@ public class TubelyticService {
         if (!query.isEmpty()) {
             try {
                 System.out.println("Line 49");
-                YouTubeService youTubeService=new YouTubeService();
-                results=youTubeService.searchVideosInfo(query);
-            } catch (GeneralSecurityException e) {
-                throw new RuntimeException(e);
-            } catch (IOException e) {
+                results= YouTubeService.searchVideosBasedOnQuery(query);
+            } catch (IOException | InterruptedException e) {
                 throw new RuntimeException(e);
             }
 
@@ -31,13 +27,11 @@ public class TubelyticService {
 
     public static ChannelProfileResult fetchChannelDetails(String channelID){
         try {
-            YouTubeService youTubeService=new YouTubeService();
-            ChannelProfileResult channelProfile = youTubeService.getChannelProfile(channelID);
+            ChannelProfileResult channelProfile = YouTubeService.getChannelProfile(channelID);
             return channelProfile;
         } catch (IOException e) {
-            e.printStackTrace();
             throw new RuntimeException("Error retrieving channel data.");
-        } catch (GeneralSecurityException e) {
+        }  catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
@@ -62,7 +56,8 @@ public class TubelyticService {
                         (e1, e2) -> e1,
                         LinkedHashMap::new
                 ));
-    }}
+    }
+}
 
 
 
