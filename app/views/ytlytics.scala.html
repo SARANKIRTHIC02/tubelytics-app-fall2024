@@ -20,8 +20,7 @@
                 <div style="margin-top: 40px;">
                 @if(!searchReq.getResults().isEmpty) {
                     <h2>Search Results for term: @searchReq.getTitle()</h2>
-                    <p id="wordStat"><a href="@routes.HomeController.wordStats(searchReq.getTitle())">More Stats</a></p>
-
+                    <p id="wordStat"><a href="@routes.HomeController.wordStats(searchReq.getTitle())" target="_blank">Word Stats</a></p>
                     <ol>
                     @for(result <- searchReq.getResults()) {
                         <li class="result-item">
