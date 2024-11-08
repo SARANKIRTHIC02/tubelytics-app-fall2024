@@ -6,9 +6,7 @@
     <div class="wrapper">
         <h2>Search Results for term: @model.getTitle()</h2>
 
-        <!-- Word Statistics -->
         <p id="wordStat"><a href="@routes.HomeController.wordStats(model.getTitle())">More Stats</a></p>
-        <!-- Video Results -->
         @if(!model.getResults().isEmpty) {
         <ol>
             @for(result <- model.getResults()) {
