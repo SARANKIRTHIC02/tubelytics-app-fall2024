@@ -74,6 +74,7 @@ public class VideoSearchResult {
 
     /**
      * Returns the description of the video.
+     *
      * @return description of the video.
      */
     public String getDescription() {

@@ -10,6 +10,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TublyticServiceTest {
     private static  MockedStatic<YouTubeService> youtubeServiceMock= Mockito.mockStatic(YouTubeService.class);
+    private static  MockedStatic<VideoSearchResult> videoServiceMock= Mockito.mockStatic(VideoSearchResult.class);
+
     @Test
     public void testFetchResultsWithQuery(){
         List<VideoSearchResult> mockResults = new ArrayList<>();
@@ -84,6 +86,69 @@ public class TublyticServiceTest {
         });
         Assert.assertTrue(exception.getCause() instanceof InterruptedException);
     }
+
+    @Test
+    public void testEmptyResultsList() {
+        List<VideoSearchResult> results = Collections.emptyList();
+        Map<String, Long> wordFrequency = TubelyticService.wordStatistics(results);
+
+        Assert.assertTrue("Expected empty word frequency map", wordFrequency.isEmpty());
+    }
+
+    @Test
+    public void testWordStatisticsWithWordsUpperAndLowerCase()
+    {
+        VideoSearchResult video1 = Mockito.mock(VideoSearchResult.class);
+        VideoSearchResult video2 = Mockito.mock(VideoSearchResult.class);
+
+        videoServiceMock.when(()-> video1.getDescription()).thenReturn("apple apple orange orange banana");
+        videoServiceMock.when(()-> video2.getDescription()).thenReturn("apple Orange Cherry cherry");
+
+        List<VideoSearchResult> results = Arrays.asList(video1, video2);
+        Map<String, Long> wordFrequency = TubelyticService.wordStatistics(results);
+
+        Map<String, Long> expected = new LinkedHashMap<>();
+        expected.put("orange", 3L);
+        expected.put("apple", 3L);
+        expected.put("cherry", 2L);
+        expected.put("banana", 1L);
+
+        Assert.assertEquals(expected, wordFrequency);
+
+    }
+    
+    @Test
+    public void testWithWordsNumbersAndSpecialCharecters()
+    {
+        VideoSearchResult video1 = Mockito.mock(VideoSearchResult.class);
+        VideoSearchResult video2 = Mockito.mock(VideoSearchResult.class);
+
+
+        videoServiceMock.when(()-> video1.getDescription()).thenReturn("Java programming is fun. 1 A I");
+        videoServiceMock.when(()-> video2.getDescription()).thenReturn("Fun with programming! Java? 2023 special chars: @#$%^&*()");
+
+        List<VideoSearchResult> results = Arrays.asList(video1, video2);
+        Map<String, Long> testWordFrequency = TubelyticService.wordStatistics(results);
+
+        Map<String, Long> expected = new LinkedHashMap<>();
+        expected.put("java", 2L);
+        expected.put("programming", 2L);
+        expected.put("fun", 2L);
+        expected.put("with", 1L);
+        expected.put("is", 1L);
+        expected.put("special", 1L);
+        expected.put("chars", 1L);
+        expected.put("2023", 1L);
+        expected.put("a", 1L);
+        expected.put("i", 1L);
+
+        Assert.assertEquals(expected, testWordFrequency);
+
+
+    }
+
+
+
 
 
 }
