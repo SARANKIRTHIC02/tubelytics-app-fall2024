@@ -6,6 +6,7 @@ import com.typesafe.config.ConfigException;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -65,13 +66,14 @@ public class YouTubeService {
         String apiUrl = String.format("%s%s&q=%s&type=video&maxResults=%d&order=date&key=%s",
                 getApiBaseUrl(), getSearchEndpoint(), query, 50, getApiKey());
         JsonNode response = HttpUtils.sendRequest(apiUrl);
+        List<VideoSearchResult> results =new ArrayList<>();
+        if(response!=null) {
+            results = parseVideoResults(response);
 
-        List<VideoSearchResult> results = parseVideoResults(response);
+            List<String> videoIds = getVideoIds(results);
+            fetchVideoTags(videoIds, results);
 
-        List<String> videoIds = getVideoIds(results);
-        fetchVideoTags(videoIds, results);
-
-        System.out.println("Line 33:   "+results);
+        }
 
         return results;
     }
@@ -88,7 +90,6 @@ public class YouTubeService {
         JsonNode response = HttpUtils.sendRequest(apiUrl);
 
         if (!response.has("items") || response.get("items").isEmpty()) {
-            System.out.println("No channel found with ID: " + channelId);
             return null;
         }
 
@@ -146,7 +147,6 @@ public class YouTubeService {
                     snippet.get("thumbnails").get("default").get("url").asText(),
                     snippet.get("channelId").asText(),
                     snippet.get("channelTitle").asText(),
-                    snippet.get("publishedAt").asText(),
                     null
             ));
         }
@@ -175,7 +175,6 @@ public class YouTubeService {
                 getApiBaseUrl(), getVideosEndpoint(), String.join(",", videoIds), getApiKey());
 
         JsonNode videoDetailsResponse = HttpUtils.sendRequest(apiUrl);
-        System.out.println(videoDetailsResponse);
 
         for (JsonNode video : videoDetailsResponse.get("items")) {
             String videoId = video.get("id").asText();
