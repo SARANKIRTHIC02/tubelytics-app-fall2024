@@ -7,7 +7,20 @@ import java.util.ArrayList;
 import java.util.*;
 import java.util.stream.Collectors;
 
+
+/**
+ * The TubelyticService class provides methods to fetch YouTube video results and channel details,
+ * as well as generate word frequency statistics from video descriptions.
+ */
 public class TubelyticService {
+    /**
+     * Fetches a list of video search results for a given query.
+     * Encodes the query using UTF-8 encoding and uses the YouTubeService to retrieve results.
+     * If the query is empty, an empty list is returned.
+     *
+     * @param query The search term to look up videos.
+     * @return A list of VideoSearchResult objects matching the query.
+     */
     public static  List<VideoSearchResult> fetchResults(String query) {
         query= URLEncoder.encode(query, StandardCharsets.UTF_8);
         List<VideoSearchResult> results= new ArrayList<>();
@@ -26,6 +39,14 @@ public class TubelyticService {
         return results;
     }
 
+    /**
+     * Fetches the profile details of a YouTube channel by its ID.
+     * Uses the YouTubeService to retrieve channel information.
+     *
+     * @param channelID The unique ID of the YouTube channel.
+     * @return A ChannelProfileResult object containing channel details, or null if the channel is not found.
+     */
+
     public static ChannelProfileResult fetchChannelDetails(String channelID){
         try {
             ChannelProfileResult channelProfile = YouTubeService.getChannelProfile(channelID);
@@ -35,6 +56,14 @@ public class TubelyticService {
         }
     }
 
+    /**
+     * Generates a word frequency map based on the descriptions of a list of video search results.
+     * Words are split by non-word characters, converted to lowercase, and counted.
+     * The resulting map is sorted in descending order of frequency.
+     *
+     * @param results A list of VideoSearchResult objects from which to generate word statistics.
+     * @return A map where keys are words and values are their frequencies, sorted by frequency in descending order.
+     */
     public static Map<String, Long> wordStatistics(List<VideoSearchResult> results) {
         List<String> allWords = results.stream()
                 .map(VideoSearchResult::getDescription)
