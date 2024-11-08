@@ -69,7 +69,8 @@ public class TubelyticService {
                 .map(VideoSearchResult::getDescription)
                 .flatMap(description -> Arrays.stream(description.split("\\W+")))
                 .map(String::toLowerCase)
-                .filter(word -> !word.isEmpty())
+                .filter(word -> !word.isEmpty() && word.matches(".*[a-zA-Z0-9].*") &&
+                        (word.length() > 1 || word.equals("i") || word.equals("a")))
                 .collect(Collectors.toList());
 
         Map<String, Long> wordFrequency = allWords.stream()
