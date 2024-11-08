@@ -2,7 +2,6 @@ package model;
 import java.util.List;
 
 public class VideoSearchResult {
-
     private String videoId;
     private String title;
     private String description;
@@ -11,7 +10,6 @@ public class VideoSearchResult {
     private String channelTitle;
     private String publishDate;
     private List<String> tags;
-
     private String videoUrl;
 
     public VideoSearchResult(String videoId, String title, String description, String thumbnailUrl,
