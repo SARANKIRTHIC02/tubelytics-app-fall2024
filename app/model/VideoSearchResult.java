@@ -8,7 +8,6 @@ public class VideoSearchResult {
     private String thumbnailUrl;
     private String channelId;
     private String channelTitle;
-    private String publishDate;
     private List<String> tags;
     private String videoUrl;
 
@@ -21,23 +20,20 @@ public class VideoSearchResult {
      * @param thumbnailUrl  The URL of the video's thumbnail.
      * @param channelId     The unique ID of the channel that published the video.
      * @param channelTitle  The title of the channel that published the video.
-     * @param publishDate   The publication date of the video.
      * @param tags          A list of tags associated with the video.
      */
     public VideoSearchResult(String videoId, String title, String description, String thumbnailUrl,
-                             String channelId, String channelTitle, String publishDate, List<String> tags) {
+                             String channelId, String channelTitle, List<String> tags) {
         this.videoId = videoId;
         this.title = title;
         this.description = description;
         this.thumbnailUrl = thumbnailUrl;
         this.channelId = channelId;
         this.channelTitle = channelTitle;
-        this.publishDate = publishDate;
         this.tags = tags;
         this.videoUrl="https://www.youtube.com/watch?v="+this.videoId;
     }
 
-    // Getters and Setters
 
     /**
      * Returns video ID.
@@ -47,14 +43,6 @@ public class VideoSearchResult {
         return videoId;
     }
 
-
-    /**
-     * Sets video ID.
-     * @param videoId video ID.
-     */
-    public void setVideoId(String videoId) {
-        this.videoId = videoId;
-    }
 
     /**
      * Returns the title of the video.
@@ -97,13 +85,6 @@ public class VideoSearchResult {
         return thumbnailUrl;
     }
 
-    /**
-     * Sets the url of the thumbnail.
-     * @param thumbnailUrl sets the url of the thumbnail.
-     */
-    public void setThumbnailUrl(String thumbnailUrl) {
-        this.thumbnailUrl = thumbnailUrl;
-    }
 
     /**
      * Returns the channel ID.
@@ -114,14 +95,6 @@ public class VideoSearchResult {
     }
 
     /**
-     * Sets the channel ID.
-     * @param channelId Channel ID.
-     */
-    public void setChannelId(String channelId) {
-        this.channelId = channelId;
-    }
-
-    /**
      * Returns the channel title.
      * @return channel title.
      */
@@ -129,29 +102,6 @@ public class VideoSearchResult {
         return channelTitle;
     }
 
-    /**
-     * Sets the channel title.
-     * @param channelTitle sets the channel title.
-     */
-    public void setChannelTitle(String channelTitle) {
-        this.channelTitle = channelTitle;
-    }
-
-    /**
-     * Returns the published date of the video.
-     * @return published date of the video.
-     */
-    public String getPublishDate() {
-        return publishDate;
-    }
-
-    /**
-     * Sets the published date of the video.
-     * @param publishDate Sets the published date of the video.
-     */
-    public void setPublishDate(String publishDate) {
-        this.publishDate = publishDate;
-    }
 
     /**
      * Returns a list of tags in a video.
@@ -170,39 +120,12 @@ public class VideoSearchResult {
     }
 
     /**
-     * Sets the url link of the video.
-     * @param videoUrl sets the url link of the video.
-     */
-    public void setVideoUrl(String videoUrl){
-        this.videoUrl=videoUrl;
-    }
-
-    /**
      * Returns the url link of the video.
      * @return url link of the video.
      */
     public String getVideoUrl()
     {
         return videoUrl;
-    }
-
-    /**
-     * Returns a string representation of the VideoSearchResult.
-     * @return A string with video details, Including ID, Title, Description, Thumbnail Url,
-     * channel ID, Channel title, Published date and tags.
-     */
-    @Override
-    public String toString() {
-        return "VideoSearchResult{" +
-                "videoId='" + videoId + '\'' +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", thumbnailUrl='" + thumbnailUrl + '\'' +
-                ", channelId='" + channelId + '\'' +
-                ", channelTitle='" + channelTitle + '\'' +
-                ", publishDate='" + publishDate + '\'' +
-                ", tags=" + tags +
-                '}';
     }
 }
 

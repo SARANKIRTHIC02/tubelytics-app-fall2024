@@ -9,8 +9,6 @@ public class SearchResponseList {
     private List<SearchResponse> requestModels;
     private String sessionID;
 
-    private static String counter;
-
     /**
      * Constructs a SearchResponseList with the specified list of search responses.
      * and a unique session ID.
