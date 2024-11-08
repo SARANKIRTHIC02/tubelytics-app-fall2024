@@ -9,6 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * The YouTubeService class provides methods to interact with the YouTube Data API.
+ * It allows for searching videos based on a query, fetching channel profile details, and
+ * retrieving word statistics from video descriptions.
+ */
 public class YouTubeService {
     private static final String apiKey;
     private static final String baseUrl;
@@ -48,6 +53,14 @@ public class YouTubeService {
         return videosEndpoint;
     }
 
+    /**
+     * Searches for videos based on a provided query.
+     * Fetches the initial results and then retrieves additional details such as tags for each video.
+     * @param query The search term for the video query.
+     * @return A list of VideoSearchResult objects containing the search results.
+     * @throws IOException If an I/O error occurs during the API request.
+     * @throws InterruptedException If the API request is interrupted.
+     */
     public static List<VideoSearchResult> searchVideosBasedOnQuery(String query) throws IOException, InterruptedException {
         String apiUrl = String.format("%s%s&q=%s&type=video&maxResults=%d&order=date&key=%s",
                 getApiBaseUrl(), getSearchEndpoint(), query, 50, getApiKey());
@@ -63,6 +76,13 @@ public class YouTubeService {
         return results;
     }
 
+    /**
+     * Retrieves the profile details of a YouTube channel by its ID.
+     * @param channelId The unique ID of the YouTube channel.
+     * @return A ChannelProfileResult object containing channel details, or null if the channel is not found.
+     * @throws IOException If an I/O error occurs during the API request.
+     * @throws InterruptedException  If the API request is interrupted.
+     */
     public static ChannelProfileResult getChannelProfile(String channelId) throws IOException, InterruptedException {
         String apiUrl = String.format("%s%s&id=%s&key=%s", getApiBaseUrl(), getChannelEndpoint(), channelId, getApiKey());
         JsonNode response = HttpUtils.sendRequest(apiUrl);
@@ -89,6 +109,13 @@ public class YouTubeService {
         );
     }
 
+    /**
+     * Retrieves recent videos from a specified YouTube channel.
+     * @param channelId The unique ID of the YouTube channel.
+     * @return A list of VideoSearchResult objects containing the recent videos from the channel.
+     * @throws IOException If an I/O error occurs during the API request.
+     * @throws InterruptedException  If the API request is interrupted.
+     */
     private static List<VideoSearchResult> getChannelRecentVideos(String channelId) throws IOException, InterruptedException {
         String apiUrl = String.format("%s%s&channelId=%s&type=video&order=date&maxResults=%d&key=%s",
                 getApiBaseUrl(), getSearchEndpoint(), channelId, 10, getApiKey());
@@ -101,6 +128,12 @@ public class YouTubeService {
         return results;
     }
 
+    /**
+     * Parses video results from a JSON response and converts them into VideoSearchResult objects.
+     *
+     * @param response The JSON response from the YouTube Data API.
+     * @return A list of VideoSearchResult objects parsed from the JSON response.
+     */
     private static List<VideoSearchResult> parseVideoResults(JsonNode response) {
         List<VideoSearchResult> results = new ArrayList<>();
         for (JsonNode item : response.get("items")) {
@@ -120,10 +153,23 @@ public class YouTubeService {
         return results;
     }
 
+    /**
+     * Extracts video IDs from a list of VideoSearchResult objects.
+     * @param results A list of VideoSearchResult objects.
+     * @return A list of video IDs.
+     */
     private static List<String> getVideoIds(List<VideoSearchResult> results) {
         return results.stream().map(VideoSearchResult::getVideoId).collect(Collectors.toList());
     }
 
+    /**
+     * Fetches tags for a list of videos based on their IDs.
+     * Updates each VideoSearchResult with its corresponding tags.
+     * @param videoIds A list of video IDs to fetch tags for.
+     * @param results  A list of VideoSearchResult objects to update with tags.
+     * @throws IOException If an I/O error occurs during the API request.
+     * @throws InterruptedException  If the API request is interrupted.
+     */
     private static void fetchVideoTags(List<String> videoIds, List<VideoSearchResult> results) throws IOException, InterruptedException {
         String apiUrl = String.format("%s%s&id=%s&key=%s",
                 getApiBaseUrl(), getVideosEndpoint(), String.join(",", videoIds), getApiKey());

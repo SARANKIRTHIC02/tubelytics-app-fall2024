@@ -11,6 +11,10 @@ import java.util.stream.Collectors;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
+/**
+ * The Homecontroller class handles various endpoints related to YouTube analytics, such as video
+ * searches, tag and word statistics, and channel details.
+ */
 public class HomeController extends Controller {
 
     public SearchResponseList accumulatedResults=new SearchResponseList(new ArrayList<>(),UUID.randomUUID().toString());
@@ -20,7 +24,6 @@ public class HomeController extends Controller {
     }
 
     public CompletionStage<Result> ytlytics(Optional<String> query) {
-
         System.out.println("Received query: " + query.orElse("none"));
         String searchQuery = query.orElse("");
 
@@ -37,6 +40,7 @@ public class HomeController extends Controller {
             return ok(views.html.ytlytics.render(accumulatedResults, wordsFiltered, searchQuery));
         });
     }
+
 
     public CompletionStage<Result> taglytics(String query) {
 
@@ -75,6 +79,7 @@ public class HomeController extends Controller {
         return ok(views.html.channelprofile.render(channelProfileInfo));
         });
     }
+
 
     public CompletionStage<Result> wordStats(String searchQuery) {
         return CompletableFuture.supplyAsync(() -> {
