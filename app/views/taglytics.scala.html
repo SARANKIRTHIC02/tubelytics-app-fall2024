@@ -1,0 +1,38 @@
+@import model.SearchResponse
+@(model: SearchResponse, wordsFiltered: Map[String, Long])
+
+@main("Taglytics Results") {
+<section id="results">
+    <div class="wrapper">
+        <h2>Search Results for term: @model.getTitle()</h2>
+
+        <!-- Word Statistics -->
+        <p id="wordStat"><a href="@routes.HomeController.wordStats(model.getTitle())">More Stats</a></p>
+        <!-- Video Results -->
+        @if(!model.getResults().isEmpty) {
+        <ol>
+            @for(result <- model.getResults()) {
+            <li class="result-item">
+                <div class="result-content">
+                    <div class="text-content">
+                        <p>
+                            <b>Title:</b> <a href="@result.getVideoUrl()" target="_blank">@result.getTitle()</a>
+                            <b>Channel:</b> <a href="@routes.HomeController.channelVideos(result.getChannelId())" target="_blank">@result.getChannelTitle()</a>
+                            <b>Description:</b> @result.getDescription()
+                            <b>Tags:</b>
+                            @for(tag <- result.getTags()) {
+                            <a href="@routes.HomeController.taglytics(tag)" target="_blank">@tag</a>
+                            }
+                        </p>
+                    </div>
+                    <img src="@result.getThumbnailUrl()" alt="Video Thumbnail" class="thumbnail">
+                </div>
+            </li>
+            }
+        </ol>
+        } else {
+        <p>No results found for the term.</p>
+        }
+    </div>
+</section>
+}

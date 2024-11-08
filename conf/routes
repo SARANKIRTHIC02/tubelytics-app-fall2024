@@ -12,4 +12,5 @@ GET     /ytlytics          controllers.HomeController.ytlytics(query: java.util.
 
 GET     /ytlytics/channel/:channelId      controllers.HomeController.channelVideos(channelId: String)
 GET     /wordStatistics/:searchQuery controllers.HomeController.wordStats(searchQuery)
+GET     /ytlytics/tags/:query  controllers.HomeController.taglytics(query: String)
 
