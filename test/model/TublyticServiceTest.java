@@ -116,7 +116,7 @@ public class TublyticServiceTest {
         Assert.assertEquals(expected, wordFrequency);
 
     }
-    
+
     @Test
     public void testWithWordsNumbersAndSpecialCharecters()
     {
