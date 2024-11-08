@@ -101,22 +101,4 @@ public class ChannelProfileResult {
         return country;
     }
 
-    /**
-     * Returns a string representation of the Channel Profile object,
-     * containing the channel details.
-     *
-     * @return a string representation of the channel profile.
-     */
-    @Override
-    public String toString() {
-        return "ChannelProfileResult{" +
-                "channelId='" + channelId + '\'' +
-                ", channelTitle='" + channelTitle + '\'' +
-                ", channelDescription='" + channelDescription + '\'' +
-                ", subscriberCount=" + subscriberCount +
-                ", channelThumbnailUrl='" + channelThumbnailUrl + '\'' +
-                ", channelThumbnailUrl='" + channelThumbnailUrl + '\''+
-                ", recentVideos=" + recentVideos +
-                '}';
-    }
 }

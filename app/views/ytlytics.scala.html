@@ -27,11 +27,11 @@
                             <div class="result-content">
                                 <div class="text-content">
                                     <p><b>Title:</b> <a href="@result.getVideoUrl" target="_blank">@result.getTitle</a>
-                                    <b>Channel:</b> <a href="@routes.HomeController.channelVideos(result.getChannelId())" target="_blank">@result.getChannelTitle</a>
+                                        <b>Channel:</b> <a href="@routes.HomeController.channelVideos(result.getChannelId())" target="_blank">@result.getChannelTitle</a>
                                         <b>Description:</b> @result.getDescription
                                         <b>Tags: </b>
                                         @for(tag <- result.getTags) {
-                                        <a href="@routes.HomeController.taglytics(tag)" target="_blank">@tag</a>
+                                            <a href="@routes.HomeController.taglytics(tag)" target="_blank">@tag</a>
                                         }
                                     </p>
                                 </div>
@@ -40,7 +40,7 @@
                         </li>
                     }
                     </ol>
-                    }
+                }
                 </div>
             }
             </div>

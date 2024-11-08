@@ -15,7 +15,7 @@ public class TublyticServiceTest {
     @Test
     public void testFetchResultsWithQuery(){
         List<VideoSearchResult> mockResults = new ArrayList<>();
-        mockResults.add(new VideoSearchResult("videoId", "title", "description", "thumbnailUrl", "channelId", "channelTitle", "publishedAt", null));
+        mockResults.add(new VideoSearchResult("videoId", "title", "description", "thumbnailUrl", "channelId", "channelTitle", null));
         youtubeServiceMock.when(() -> YouTubeService.searchVideosBasedOnQuery("Lion")).thenReturn(mockResults);
         List<VideoSearchResult> results=TubelyticService.fetchResults("Lion");
         System.out.println(results);
