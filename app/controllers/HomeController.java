@@ -19,10 +19,21 @@ public class HomeController extends Controller {
 
     public SearchResponseList accumulatedResults=new SearchResponseList(new ArrayList<>(),UUID.randomUUID().toString());
 
+    /**
+     * Renders the index page.
+     *
+     * @return Rendered index page.
+     */
     public CompletionStage<Result> index() {
         return CompletableFuture.supplyAsync(() -> ok(views.html.index.render()));
     }
 
+    /**
+     * Handles YouTube video search based on a query, accumulates the results,
+     * and returns the analysis of word statistics and search results.
+     * @param query The search query as an optional string.
+     * @return Renders the YouTube analytics page with search results and word statistics.
+     */
     public CompletionStage<Result> ytlytics(Optional<String> query) {
         System.out.println("Received query: " + query.orElse("none"));
         String searchQuery = query.orElse("");
@@ -41,7 +52,11 @@ public class HomeController extends Controller {
         });
     }
 
-
+    /**
+     * Handles YouTube video search based on a query and returns tag statistics for the search results.
+     * @param query The search query.
+     * @return Renders the tag analytics page with tag statistics and search results.
+     */
     public CompletionStage<Result> taglytics(String query) {
 
         return CompletableFuture.supplyAsync(() -> {
@@ -57,6 +72,12 @@ public class HomeController extends Controller {
         });
     }
 
+    /**
+     * Retrieves videos from a specific YouTube channel based on the channel ID and renders the channel profile page.
+     *
+     * @param channelId The unique identifier for the YouTube channel.
+     * @return A completion stage that renders the channel profile page with channel details.
+     */
     public CompletionStage<Result> channelVideos(String channelId) {
         return CompletableFuture.supplyAsync(() -> {
         ChannelProfileResult channelProfileInfo = TubelyticService.fetchChannelDetails(channelId);
@@ -69,6 +90,12 @@ public class HomeController extends Controller {
         });
     }
 
+    /**
+     * Fetches tags for a specific video based on the video ID and renders the channel profile page.
+     *
+     * @param videoID The unique identifier for the YouTube video.
+     * @return Renders the channel profile page.
+     */
     public CompletionStage<Result> tags(String videoID){
         return CompletableFuture.supplyAsync(() -> {
         ChannelProfileResult channelProfileInfo = TubelyticService.fetchChannelDetails(videoID);
@@ -80,7 +107,11 @@ public class HomeController extends Controller {
         });
     }
 
-
+    /**
+     * Analyzes word statistics based on a search query and renders the word statistics page.
+     * @param searchQuery The search query for which word statistics will be generated.
+     * @return Renders the word statistics page with analyzed word data.
+     */
     public CompletionStage<Result> wordStats(String searchQuery) {
         return CompletableFuture.supplyAsync(() -> {
         List<VideoSearchResult> newResults = TubelyticService.fetchResults(searchQuery);
