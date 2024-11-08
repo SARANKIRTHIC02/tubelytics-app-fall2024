@@ -34,22 +34,42 @@ public class YouTubeService {
         }
     }
 
+    /**
+     * Method return API key.
+     * @return API key.
+     */
     public static String getApiKey() {
         return apiKey;
     }
 
+    /**
+     * Method to return the base URL for the YouTube Data API.
+     * @return Base URL for the API.
+     */
     public static String getApiBaseUrl() {
         return baseUrl;
     }
 
+    /**
+     * Method to return the endpoint for the search API.
+     * @return Endpoint for search API.
+     */
     public static String getSearchEndpoint() {
         return searchEndpoint;
     }
 
+    /**
+     * Method to return the endpoint for channel details API.
+     * @return Endpoint for Channel details API.
+     */
     public static String getChannelEndpoint() {
         return channelEndpoint;
     }
 
+    /**
+     * Method to return the endpoint for video details API.
+     * @return Endpoint for video details API.
+     */
     public static String getVideosEndpoint() {
         return videosEndpoint;
     }
