@@ -2,6 +2,7 @@ package Util;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import Util.HttpUtils;
 import org.junit.jupiter.api.Test;
 import java.io.IOException;
 

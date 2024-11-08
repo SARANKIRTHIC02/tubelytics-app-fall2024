@@ -2,8 +2,7 @@ package model;
 
 import Util.HttpUtils;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
+import com.typesafe.config.ConfigException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,13 +15,43 @@ import java.util.stream.Collectors;
  * retrieving word statistics from video descriptions.
  */
 public class YouTubeService {
+    private static final String apiKey;
+    private static final String baseUrl;
+    private static final String searchEndpoint;
+    private static final String channelEndpoint;
+    private static final String videosEndpoint;
 
-    private static final Config config = ConfigFactory.load();
-    private static final String BASE_URL = config.getString("youtube.base-url");
-    private static final String API_KEY = config.getString("youtube.api-key");
-    private static final String SEARCH_ENDPOINT = config.getString("youtube.search-endpoint");
-    private static final String VIDEOS_ENDPOINT = config.getString("youtube.videos-endpoint");
-    private static final String CHANNEL_ENDPOINT = config.getString("youtube.channel-endpoint");
+    static {
+        try {
+            apiKey = "AIzaSyCL43QCR0kOW8iDEgmvgwybGfcaJCgKH10";
+            baseUrl = "https://www.googleapis.com/youtube/v3";
+            searchEndpoint = "/search?part=snippet";
+            channelEndpoint = "/channels?part=snippet,statistics";
+            videosEndpoint = "/videos?part=snippet,statistics";
+        } catch (ConfigException.Missing e) {
+            throw new RuntimeException("YouTube API configuration issuef", e);
+        }
+    }
+
+    public static String getApiKey() {
+        return apiKey;
+    }
+
+    public static String getApiBaseUrl() {
+        return baseUrl;
+    }
+
+    public static String getSearchEndpoint() {
+        return searchEndpoint;
+    }
+
+    public static String getChannelEndpoint() {
+        return channelEndpoint;
+    }
+
+    public static String getVideosEndpoint() {
+        return videosEndpoint;
+    }
 
     /**
      * Searches for videos based on a provided query.
@@ -34,7 +63,7 @@ public class YouTubeService {
      */
     public static List<VideoSearchResult> searchVideosBasedOnQuery(String query) throws IOException, InterruptedException {
         String apiUrl = String.format("%s%s&q=%s&type=video&maxResults=%d&order=date&key=%s",
-                BASE_URL, SEARCH_ENDPOINT, query, 50, API_KEY);
+                getApiBaseUrl(), getSearchEndpoint(), query, 50, getApiKey());
         JsonNode response = HttpUtils.sendRequest(apiUrl);
 
         List<VideoSearchResult> results = parseVideoResults(response);
@@ -55,7 +84,7 @@ public class YouTubeService {
      * @throws InterruptedException  If the API request is interrupted.
      */
     public static ChannelProfileResult getChannelProfile(String channelId) throws IOException, InterruptedException {
-        String apiUrl = String.format("%s%s&id=%s&key=%s", BASE_URL, CHANNEL_ENDPOINT, channelId, API_KEY);
+        String apiUrl = String.format("%s%s&id=%s&key=%s", getApiBaseUrl(), getChannelEndpoint(), channelId, getApiKey());
         JsonNode response = HttpUtils.sendRequest(apiUrl);
 
         if (!response.has("items") || response.get("items").isEmpty()) {
@@ -89,7 +118,7 @@ public class YouTubeService {
      */
     private static List<VideoSearchResult> getChannelRecentVideos(String channelId) throws IOException, InterruptedException {
         String apiUrl = String.format("%s%s&channelId=%s&type=video&order=date&maxResults=%d&key=%s",
-                BASE_URL, SEARCH_ENDPOINT, channelId, 10, API_KEY);
+                getApiBaseUrl(), getSearchEndpoint(), channelId, 10, getApiKey());
         JsonNode response = HttpUtils.sendRequest(apiUrl);
 
         List<VideoSearchResult> results = parseVideoResults(response);
@@ -143,7 +172,7 @@ public class YouTubeService {
      */
     private static void fetchVideoTags(List<String> videoIds, List<VideoSearchResult> results) throws IOException, InterruptedException {
         String apiUrl = String.format("%s%s&id=%s&key=%s",
-                BASE_URL, VIDEOS_ENDPOINT, String.join(",", videoIds), API_KEY);
+                getApiBaseUrl(), getVideosEndpoint(), String.join(",", videoIds), getApiKey());
 
         JsonNode videoDetailsResponse = HttpUtils.sendRequest(apiUrl);
         System.out.println(videoDetailsResponse);
