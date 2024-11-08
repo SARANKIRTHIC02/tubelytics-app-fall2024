@@ -82,20 +82,20 @@ public class HomeController extends Controller {
         return ok(views.html.channelprofile.render(channelProfileInfo));
     }
 
-//    /**
-//     * Retrieves and displays the tags for a specific YouTube video.
-//     *
-//     * @param videoID the unique ID of the video
-//     * @return a Result rendering the tags for the video, or a 404 error if the video is not found
-//     */
-//    public Result tags(String videoID){
-//        ChannelProfileResult channelProfileInfo = TubelyticService.fetchChannelDetails(videoID);
-//
-//        if (channelProfileInfo == null) {
-//            return notFound("Video not found with ID: " + videoID);
-//        }
-//        return ok(views.html.channelprofile.render(channelProfileInfo));
-//    }
+    /**
+     * Retrieves and displays the tags for a specific YouTube video.
+     *
+     * @param videoID the unique ID of the video
+     * @return a Result rendering the tags for the video, or a 404 error if the video is not found
+     */
+    public Result tags(String videoID){
+        ChannelProfileResult channelProfileInfo = TubelyticService.fetchChannelDetails(videoID);
+
+        if (channelProfileInfo == null) {
+            return notFound("Video not found with ID: " + videoID);
+        }
+        return ok(views.html.channelprofile.render(channelProfileInfo));
+    }
 
     /**
      * Displays word statistics based on a given search query.
