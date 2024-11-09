@@ -6,6 +6,7 @@ import com.typesafe.config.ConfigException;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,22 +34,42 @@ public class YouTubeService {
         }
     }
 
+    /**
+     * Method return API key.
+     * @return API key.
+     */
     public static String getApiKey() {
         return apiKey;
     }
 
+    /**
+     * Method to return the base URL for the YouTube Data API.
+     * @return Base URL for the API.
+     */
     public static String getApiBaseUrl() {
         return baseUrl;
     }
 
+    /**
+     * Method to return the endpoint for the search API.
+     * @return Endpoint for search API.
+     */
     public static String getSearchEndpoint() {
         return searchEndpoint;
     }
 
+    /**
+     * Method to return the endpoint for channel details API.
+     * @return Endpoint for Channel details API.
+     */
     public static String getChannelEndpoint() {
         return channelEndpoint;
     }
 
+    /**
+     * Method to return the endpoint for video details API.
+     * @return Endpoint for video details API.
+     */
     public static String getVideosEndpoint() {
         return videosEndpoint;
     }
@@ -65,13 +86,14 @@ public class YouTubeService {
         String apiUrl = String.format("%s%s&q=%s&type=video&maxResults=%d&order=date&key=%s",
                 getApiBaseUrl(), getSearchEndpoint(), query, 50, getApiKey());
         JsonNode response = HttpUtils.sendRequest(apiUrl);
+        List<VideoSearchResult> results =new ArrayList<>();
+        if(response!=null) {
+            results = parseVideoResults(response);
 
-        List<VideoSearchResult> results = parseVideoResults(response);
+            List<String> videoIds = getVideoIds(results);
+            fetchVideoTags(videoIds, results);
 
-        List<String> videoIds = getVideoIds(results);
-        fetchVideoTags(videoIds, results);
-
-        System.out.println("Line 33:   "+results);
+        }
 
         return results;
     }
@@ -88,7 +110,6 @@ public class YouTubeService {
         JsonNode response = HttpUtils.sendRequest(apiUrl);
 
         if (!response.has("items") || response.get("items").isEmpty()) {
-            System.out.println("No channel found with ID: " + channelId);
             return null;
         }
 
@@ -146,7 +167,6 @@ public class YouTubeService {
                     snippet.get("thumbnails").get("default").get("url").asText(),
                     snippet.get("channelId").asText(),
                     snippet.get("channelTitle").asText(),
-                    snippet.get("publishedAt").asText(),
                     null
             ));
         }
@@ -175,7 +195,6 @@ public class YouTubeService {
                 getApiBaseUrl(), getVideosEndpoint(), String.join(",", videoIds), getApiKey());
 
         JsonNode videoDetailsResponse = HttpUtils.sendRequest(apiUrl);
-        System.out.println(videoDetailsResponse);
 
         for (JsonNode video : videoDetailsResponse.get("items")) {
             String videoId = video.get("id").asText();
