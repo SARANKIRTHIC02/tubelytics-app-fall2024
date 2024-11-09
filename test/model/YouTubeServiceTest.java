@@ -3,7 +3,6 @@ package model;
 import Util.HttpUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.MockedStatic;
@@ -11,10 +10,8 @@ import org.mockito.Mockito;
 
 import java.io.IOException;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
 
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
 
 public class YouTubeServiceTest {
     private static final ObjectMapper objectMapper = new ObjectMapper();
@@ -29,7 +26,6 @@ public class YouTubeServiceTest {
             mockedHttpUtils.when(() -> HttpUtils.sendRequest(anyString())).thenReturn(mockResponse);
 
             List<VideoSearchResult> results = YouTubeService.searchVideosBasedOnQuery("test_query");
-
             Assert.assertNotNull(results);
             Assert.assertEquals(results.size(), 1);
             Assert.assertEquals("testVideoID", results.get(0).getVideoId());
@@ -70,5 +66,16 @@ public class YouTubeServiceTest {
         }
     }
 
+    @Test
+    public void testGetChannelProfile_withNullResponse() throws IOException, InterruptedException {
+        String mockEmptyItemsResponse = "{ \"items\": [] }";
+        JsonNode mockResponse = objectMapper.readTree(mockEmptyItemsResponse);
+
+        try (MockedStatic<HttpUtils> mockedHttpUtils = Mockito.mockStatic(HttpUtils.class)) {
+            mockedHttpUtils.when(() -> HttpUtils.sendRequest(anyString())).thenReturn(mockResponse);
+            ChannelProfileResult profile = YouTubeService.getChannelProfile("testChannelId");
+            Assert.assertNull(profile);
+        }
+    }
 
 }

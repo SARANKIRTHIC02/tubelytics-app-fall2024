@@ -16,8 +16,6 @@ import java.net.http.HttpResponse;
  */
 public class HttpUtils {
     private static final ObjectMapper objectMapper = new ObjectMapper();
-    private static final HttpClient httpClient = HttpClient.newHttpClient();
-
     /**
      * Sends an HTTP GET request to the specified API URL and parses the JSON response.
      * @param apiUrl The URL of the API endpoint to send the request to.
@@ -26,7 +24,7 @@ public class HttpUtils {
      * @throws InterruptedException If the operation is interrupted.
      */
     public static JsonNode sendRequest(String apiUrl) throws IOException, InterruptedException {
-
+        HttpClient httpClient = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(apiUrl))
                 .header("Accept", "application/json")
