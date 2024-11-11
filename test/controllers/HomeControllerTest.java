@@ -69,7 +69,7 @@ public class HomeControllerTest extends WithApplication {
     }
 
     @Test
-    public void testTaglyticsWithQuery_MockedResponse() throws IOException, InterruptedException {
+    public void testTaglyticsWithQueryMockedResponse() throws IOException, InterruptedException {
         System.out.println("HomeController 3");
         String query = "SampleVideo";
         List<VideoSearchResult> mockResults = new ArrayList<>();

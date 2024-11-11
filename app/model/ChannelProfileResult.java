@@ -3,6 +3,9 @@ package model;
 import java.util.List;
 
 /**
+ *  @author durai
+ * @author sushanth
+ *
  * The class represents a YouTube channel profile, including details like channel ID, title, description, subscriber
  * count, thumbnail URL, country, and a list of recent videos.
  */
@@ -17,7 +20,7 @@ public class ChannelProfileResult {
 
     /**
      * Constructor.
-     *
+     * @author durai
      * @param channelId the unique identifier of the YouTube channel.
      * @param channelTitle the title or name of the channel.
      * @param channelDescription a description of the channel content.
@@ -39,6 +42,7 @@ public class ChannelProfileResult {
 
     // Getters and Setters
     /**
+     * @author durai
      * Gets the unique identifier of the YouTube channel.
      *
      * @return the channel ID.
@@ -48,6 +52,7 @@ public class ChannelProfileResult {
     }
 
     /**
+     * @author durai
      * Gets the title or name of the YouTube channel.
      *
      * @return the channel title.
@@ -57,6 +62,7 @@ public class ChannelProfileResult {
     }
 
     /**
+     * @author durai
      * Gets the description of the YouTube channel.
      *
      * @return the channel description.
@@ -66,6 +72,7 @@ public class ChannelProfileResult {
     }
 
     /**
+     * @author durai
      * Gets the subscriber count of the YouTube channel.
      *
      * @return the subscriber count.
@@ -75,6 +82,7 @@ public class ChannelProfileResult {
     }
 
     /**
+     * @author durai
      * Gets the URL of the YouTube channel's thumbnail image.
      *
      * @return the channel thumbnail URL.
@@ -84,6 +92,7 @@ public class ChannelProfileResult {
     }
 
     /**
+     * @author durai
      * Gets the list of recent videos published by the channel.
      *
      * @return a list of {@code VideoSearchResult} representing recent videos.
@@ -93,6 +102,7 @@ public class ChannelProfileResult {
     }
 
     /**
+     * @author durai
      * Gets the country where the YouTube channel is based, if available.
      *
      * @return the country of the channel, or "-" if not specified.

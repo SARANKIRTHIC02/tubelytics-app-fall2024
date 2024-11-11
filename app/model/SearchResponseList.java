@@ -2,6 +2,7 @@ package model;
 import java.util.*;
 
 /**
+ * @author durai
  * The class represents a collection of objects associates with a unique session ID.
  * This class is used to store and retrieve search responses for a specific session.
  */
@@ -10,6 +11,7 @@ public class SearchResponseList {
     private String sessionID;
 
     /**
+     * @author durai
      * Constructs a SearchResponseList with the specified list of search responses.
      * and a unique session ID.
      *
@@ -23,6 +25,7 @@ public class SearchResponseList {
     }
 
     /**
+     * @author durai
      * Gets the list of search responses for the current session.
      *
      * @return a list of SearchResponse objects.
@@ -32,6 +35,7 @@ public class SearchResponseList {
     }
 
     /**
+     * @author durai
      * Gets the unique session ID associated with this collection of search responses.
      *
      * @return the session ID

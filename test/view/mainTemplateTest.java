@@ -8,7 +8,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static play.test.Helpers.contentAsString;
 
+/**
+ * Unit tests for the main template, verifying the correct rendering of the main layout.
+ * Ensures that the main template correctly incorporates dynamic title and content,
+ * and includes necessary static resources like CSS and JavaScript files.
+ */
 public class mainTemplateTest {
+    /** @author saran
+     * Tests the rendering of the main template by verifying content type,
+     * dynamic title and content, and the inclusion of static resources.
+     *
+     */
     @Test
     public void testMainTemplate() {
         Content html = views.html.main.render("Test Title", Html.apply("<h1>Hello, World!</h1>"));
