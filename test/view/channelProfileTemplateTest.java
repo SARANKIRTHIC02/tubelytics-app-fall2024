@@ -10,8 +10,20 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Unit tests for the channel profile view template, verifying content rendering for channels
+ * with and without recent videos.
+ */
 public class channelProfileTemplateTest {
 
+
+    /**
+     * @author saran
+     * @author durai
+     * Tests the rendering of the channel profile view when recent videos are available.
+     * Verifies that the HTML content includes channel information, video titles, descriptions, tags,
+     * and other relevant details.
+     */
     @Test
     public void testChannelProfileViewWithVideos() {
         List<VideoSearchResult> recentVideos = List.of(
@@ -45,6 +57,13 @@ public class channelProfileTemplateTest {
         assertTrue(html.body().contains("<p><b>Subscribers:</b> 123456</p>"));
     }
 
+    /**
+     * @author sushanth
+     * @author saran
+     * Tests the rendering of the channel profile view when no recent videos are available.
+     * Verifies that the HTML content includes the channel information but displays a message
+     * indicating no recent videos are found.
+     */
     @Test
     public void testChannelProfileViewNoVideos() {
         ChannelProfileResult channel = new ChannelProfileResult(

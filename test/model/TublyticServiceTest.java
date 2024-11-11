@@ -13,7 +13,12 @@ public class TublyticServiceTest {
     private static  MockedStatic<YouTubeService> youtubeServiceMock= Mockito.mockStatic(YouTubeService.class);
     private static  MockedStatic<VideoSearchResult> videoServiceMock= Mockito.mockStatic(VideoSearchResult.class);
 
-
+    /**
+     * @author durai
+     * @author saran
+     * Tests fetching video results based on a query string, using a mocked YouTubeService.
+     * Verifies that the fetched results are not empty and that the video ID matches the expected value.
+     */
     @Test
     public void testFetchResultsWithQuery(){
         System.out.println("TubeLytics 1");
@@ -25,6 +30,12 @@ public class TublyticServiceTest {
         Assert.assertTrue(results.size()>0);
         Assert.assertEquals("videoId",results.get(0).getVideoId());
     }
+
+    /**
+     * @author durai
+     * @author sushanth
+     * Tests fetching video results with an empty query string.
+     */
     @Test
     public void testFetchResultsWithOutQuery(){
         System.out.println("TubeLytics 2");
@@ -32,6 +43,13 @@ public class TublyticServiceTest {
         List<VideoSearchResult> results=TubelyticService.fetchResults("");
         Assert.assertTrue(results.size()==0);
     }
+
+    /**
+     * @author durai
+     * @author saran
+     * Tests fetching channel details based on a channel ID, using a mocked YouTubeService.
+     * Verifies that the channel ID and channel title match expected values.
+     */
     @Test
     public void testFetchChannelDetailsWithChannelID(){
         System.out.println("TubeLytics 3");
@@ -42,6 +60,11 @@ public class TublyticServiceTest {
         Assert.assertEquals("UCi7Zk9baY1tvdlgxIML8MXg",channelProfileResult.getChannelId());
         Assert.assertEquals("AVC News",channelProfileResult.getChannelTitle());
     }
+
+    /**
+     *
+     * Tests fetching channel details with an empty channel ID
+     */
     @Test
     public void testFetchChannelDetailsWithOutChannelID(){
         System.out.println("TubeLytics 4");
@@ -49,6 +72,12 @@ public class TublyticServiceTest {
         ChannelProfileResult profileResult=TubelyticService.fetchChannelDetails("");
         Assert.assertNull(profileResult);
     }
+
+    /**
+     * @author durai
+     * @author saran
+     * Tests that fetching video results throws a RuntimeException when an IOException occurs.
+     */
    @Test
     public void testFetchResultsThrowsRuntimeExceptionOnIOException() {
        System.out.println("TubeLytics 5");
@@ -61,6 +90,11 @@ public class TublyticServiceTest {
         Assert.assertTrue(exception.getCause() instanceof IOException);
     }
 
+    /**
+     * @author druai
+     * @author sushanth
+     * Tests that fetching video results throws a RuntimeException when an InterruptedException occurs.
+     */
     @Test
     public void testFetchResultsThrowsRuntimeExceptionOnInterruptedException() {
         System.out.println("TubeLytics 6");
@@ -73,6 +107,11 @@ public class TublyticServiceTest {
         Assert.assertTrue(exception.getCause() instanceof InterruptedException);
     }
 
+    /**
+     * @author durai
+     * @author saran
+     * Tests that fetching channel details throws a RuntimeException when an IOException occurs.
+     */
     @Test
     public void testFetchChannelDetailsThrowsRuntimeExceptionOnIOException() {
         System.out.println("TubeLytics 7");
@@ -85,6 +124,11 @@ public class TublyticServiceTest {
         Assert.assertTrue(exception.getCause() instanceof IOException);
     }
 
+    /**
+     * @author durai
+     * @author susanth
+     * Tests that fetching channel details throws a RuntimeException when an InterruptedException occurs.
+     */
     @Test
     public void testFetchChannelDetailsThrowsRuntimeExceptionOnInterruptedException() {
         System.out.println("TubeLytics 8");
@@ -97,6 +141,11 @@ public class TublyticServiceTest {
         Assert.assertTrue(exception.getCause() instanceof InterruptedException);
     }
 
+    /**
+     * @author saran
+     * @author durai
+     * Tests that the word frequency map is empty when given an empty list of video results.
+     */
     @Test
     public void testEmptyResultsList() {
         System.out.println("TubeLytics 9");
@@ -106,6 +155,12 @@ public class TublyticServiceTest {
         Assert.assertTrue("Expected empty word frequency map", wordFrequency.isEmpty());
     }
 
+    /**
+     * @author saran
+     * @author durai
+     * Tests word statistics generation with mixed-case words, verifying case insensitivity.
+     * Expected result: words appear in lowercase with correct frequencies.
+     */
     @Test
     public void testWordStatisticsWithWordsUpperAndLowerCase()
     {
@@ -129,6 +184,12 @@ public class TublyticServiceTest {
 
     }
 
+    /**
+     * @author saran
+     * @author durai
+     * Tests word statistics generation with words, numbers, and special characters.
+     * Verifies correct word frequencies, ignoring non-alphabetic symbols.
+     */
     @Test
     public void testWithWordsNumbersAndSpecialCharecters()
     {
@@ -136,13 +197,11 @@ public class TublyticServiceTest {
         VideoSearchResult video1 = Mockito.mock(VideoSearchResult.class);
         VideoSearchResult video2 = Mockito.mock(VideoSearchResult.class);
 
-
         videoServiceMock.when(()-> video1.getDescription()).thenReturn("Java programming is fun. 1 A I");
         videoServiceMock.when(()-> video2.getDescription()).thenReturn("Fun with programming! Java? 2023 special chars: @#$%^&*()");
 
         List<VideoSearchResult> results = Arrays.asList(video1, video2);
         Map<String, Long> testWordFrequency = TubelyticService.wordStatistics(results);
-
         Map<String, Long> expected = new LinkedHashMap<>();
         expected.put("java", 2L);
         expected.put("programming", 2L);
@@ -156,8 +215,6 @@ public class TublyticServiceTest {
         expected.put("i", 1L);
 
         Assert.assertEquals(expected, testWordFrequency);
-
-
     }
 
 
