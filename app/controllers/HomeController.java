@@ -40,13 +40,11 @@ public class HomeController extends Controller {
      */
 
     public CompletionStage<Result> ytlytics(Optional<String> query) {
-        System.out.println("Received query: " + query.orElse("none"));
         String searchQuery = query.orElse("");
 
         return CompletableFuture.supplyAsync(() -> {
             List<VideoSearchResult> newResults = TubelyticService.fetchResults(searchQuery);
             Map<String, Long> wordsFiltered = TubelyticService.wordStatistics(newResults);
-            //System.out.println(wordsFiltered);
             List<VideoSearchResult> limitedResults = newResults.stream()
                     .limit(10)
                     .collect(Collectors.toList());
@@ -70,7 +68,6 @@ public class HomeController extends Controller {
         return CompletableFuture.supplyAsync(() -> {
             List<VideoSearchResult> newResults = TubelyticService.fetchResults(query);
             Map<String, Long> wordsFiltered = TubelyticService.wordStatistics(newResults);
-            //System.out.println(wordsFiltered);
             List<VideoSearchResult> limitedResults = newResults.stream()
                     .limit(10)
                     .collect(Collectors.toList());

@@ -26,7 +26,7 @@ public class YouTubeService {
     private static final String videosEndpoint;
 
     static {
-            apiKey = "AIzaSyBgbRCqNg7bJ-tOgJjONAIZ7v3fU_pHKjQ";
+            apiKey = "AIzaSyCGi_3tP5IQdpXajRIe7ycgbkaLLwYWWYs";
             baseUrl = "https://www.googleapis.com/youtube/v3";
             searchEndpoint = "/search?part=snippet";
             channelEndpoint = "/channels?part=snippet,statistics";
@@ -117,8 +117,6 @@ public class YouTubeService {
     public static ChannelProfileResult getChannelProfile(String channelId) throws IOException, InterruptedException {
         String apiUrl = String.format("%s%s&id=%s&key=%s", getApiBaseUrl(), getChannelEndpoint(), channelId, getApiKey());
         JsonNode response = HttpUtils.sendRequest(apiUrl);
-
-        //System.out.println(response);
         if (!response.has("items") || response.get("items").isEmpty()) {
             return null;
         }

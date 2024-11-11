@@ -20,8 +20,5 @@ libraryDependencies += "org.junit.jupiter" % "junit-jupiter-engine" % "5.8.2" % 
 
 libraryDependencies += "org.mockito" % "mockito-core" % "5.2.0" % Test
 libraryDependencies += "org.mockito" % "mockito-junit-jupiter" % "5.2.0" % Test
-jacocoExcludes := Seq(
-  "controllers/javascript/.*",
-  ".\\/javascript\\/."
-)
+
 

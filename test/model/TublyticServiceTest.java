@@ -21,12 +21,10 @@ public class TublyticServiceTest {
      */
     @Test
     public void testFetchResultsWithQuery(){
-        System.out.println("TubeLytics 1");
         List<VideoSearchResult> mockResults = new ArrayList<>();
         mockResults.add(new VideoSearchResult("videoId", "title", "description", "thumbnailUrl", "channelId", "channelTitle", null));
         youtubeServiceMock.when(() -> YouTubeService.searchVideosBasedOnQuery("Lion")).thenReturn(mockResults);
         List<VideoSearchResult> results=TubelyticService.fetchResults("Lion");
-        System.out.println(results);
         Assert.assertTrue(results.size()>0);
         Assert.assertEquals("videoId",results.get(0).getVideoId());
     }
@@ -38,7 +36,6 @@ public class TublyticServiceTest {
      */
     @Test
     public void testFetchResultsWithOutQuery(){
-        System.out.println("TubeLytics 2");
         youtubeServiceMock.when(() -> YouTubeService.searchVideosBasedOnQuery("test")).thenReturn(new ArrayList<VideoSearchResult>());
         List<VideoSearchResult> results=TubelyticService.fetchResults("");
         Assert.assertTrue(results.size()==0);
@@ -52,7 +49,6 @@ public class TublyticServiceTest {
      */
     @Test
     public void testFetchChannelDetailsWithChannelID(){
-        System.out.println("TubeLytics 3");
         String channelID="UCi7Zk9baY1tvdlgxIML8MXg";
         ChannelProfileResult mockChannelProfile=new ChannelProfileResult(channelID, "AVC News","",200000L,"","",Collections.emptyList());
         youtubeServiceMock.when(() -> YouTubeService.getChannelProfile(channelID)).thenReturn(mockChannelProfile);
@@ -67,7 +63,6 @@ public class TublyticServiceTest {
      */
     @Test
     public void testFetchChannelDetailsWithOutChannelID(){
-        System.out.println("TubeLytics 4");
         youtubeServiceMock.when(() -> YouTubeService.getChannelProfile("")).thenReturn(null);
         ChannelProfileResult profileResult=TubelyticService.fetchChannelDetails("");
         Assert.assertNull(profileResult);
@@ -80,7 +75,6 @@ public class TublyticServiceTest {
      */
    @Test
     public void testFetchResultsThrowsRuntimeExceptionOnIOException() {
-       System.out.println("TubeLytics 5");
         youtubeServiceMock.when(() -> YouTubeService.searchVideosBasedOnQuery("test"))
                 .thenThrow(new IOException());
 
@@ -97,7 +91,6 @@ public class TublyticServiceTest {
      */
     @Test
     public void testFetchResultsThrowsRuntimeExceptionOnInterruptedException() {
-        System.out.println("TubeLytics 6");
         youtubeServiceMock.when(() -> YouTubeService.searchVideosBasedOnQuery("test"))
                 .thenThrow(new InterruptedException());
 
@@ -114,7 +107,6 @@ public class TublyticServiceTest {
      */
     @Test
     public void testFetchChannelDetailsThrowsRuntimeExceptionOnIOException() {
-        System.out.println("TubeLytics 7");
         youtubeServiceMock.when(() -> YouTubeService.getChannelProfile("channel123"))
                 .thenThrow(new IOException());
 
@@ -131,7 +123,6 @@ public class TublyticServiceTest {
      */
     @Test
     public void testFetchChannelDetailsThrowsRuntimeExceptionOnInterruptedException() {
-        System.out.println("TubeLytics 8");
         youtubeServiceMock.when(() -> YouTubeService.getChannelProfile("channel123"))
                 .thenThrow(new InterruptedException());
 
@@ -148,7 +139,6 @@ public class TublyticServiceTest {
      */
     @Test
     public void testEmptyResultsList() {
-        System.out.println("TubeLytics 9");
         List<VideoSearchResult> results = Collections.emptyList();
         Map<String, Long> wordFrequency = TubelyticService.wordStatistics(results);
 
@@ -164,7 +154,6 @@ public class TublyticServiceTest {
     @Test
     public void testWordStatisticsWithWordsUpperAndLowerCase()
     {
-        System.out.println("TubeLytics 10");
         VideoSearchResult video1 = Mockito.mock(VideoSearchResult.class);
         VideoSearchResult video2 = Mockito.mock(VideoSearchResult.class);
 
@@ -193,7 +182,6 @@ public class TublyticServiceTest {
     @Test
     public void testWithWordsNumbersAndSpecialCharecters()
     {
-        System.out.println("TubeLytics 11");
         VideoSearchResult video1 = Mockito.mock(VideoSearchResult.class);
         VideoSearchResult video2 = Mockito.mock(VideoSearchResult.class);
 

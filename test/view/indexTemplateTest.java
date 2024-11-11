@@ -26,6 +26,5 @@ public class indexTemplateTest {
         String htmlContent = contentAsString(html);
         assertTrue(htmlContent.contains("<title>Welcome to Play</title>"));
         assertTrue(htmlContent.contains("<h1>Welcome to Play!</h1>"));
-        System.out.println();
     }
 }
