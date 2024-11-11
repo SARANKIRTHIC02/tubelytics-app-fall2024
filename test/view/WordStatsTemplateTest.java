@@ -18,11 +18,10 @@ import static play.test.Helpers.contentAsString;
 public class WordStatsTemplateTest extends WithApplication {
 
     /**
-     * @author saran
-     * @author sushanth
      * Tests the rendering of the wordStats template with provided word frequency data.
      * Verifies that the word frequencies are correctly displayed in the HTML table.
-     *
+     * @author saran
+     * @author sushanth
      */
     @Test
     public void testWordFrequencyTemplateWithData() {
@@ -44,11 +43,10 @@ public class WordStatsTemplateTest extends WithApplication {
     }
 
     /**
-     * @author saran
-     * @author sushanth
      * Tests the rendering of the wordStats template when no word frequency data is provided.
      * Verifies that the empty table body is correctly displayed.
-     *
+     *@author saran
+     *@author sushanth
      */
     @Test
     public void testWordFrequencyTemplateWithoutData() {

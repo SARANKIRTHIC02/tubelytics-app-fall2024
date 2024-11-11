@@ -53,11 +53,10 @@ public class taglyticsTemplateTest extends WithApplication {
     }
 
     /**
-     * @author saran
-     * @author durai
      * Tests the rendering of the taglytics template when no video search results are found.
      * Verifies that the message indicating no results is correctly displayed.
-     *
+     *@author saran
+     * @author durai
      */
     @Test
     public void testTaglyticsTemplateWithoutResults() {

@@ -14,10 +14,10 @@ import static play.test.Helpers.contentAsString;
  * and includes necessary static resources like CSS and JavaScript files.
  */
 public class mainTemplateTest {
-    /** @author saran
+    /**
      * Tests the rendering of the main template by verifying content type,
      * dynamic title and content, and the inclusion of static resources.
-     *
+     * @author saran
      */
     @Test
     public void testMainTemplate() {
