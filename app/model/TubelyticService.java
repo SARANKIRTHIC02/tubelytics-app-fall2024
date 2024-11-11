@@ -30,7 +30,6 @@ public class TubelyticService {
 
         if (!query.isEmpty()) {
             try {
-                System.out.println("Line 49");
                 results= YouTubeService.searchVideosBasedOnQuery(query);
             } catch (IOException | InterruptedException e) {
                 throw new RuntimeException(e);

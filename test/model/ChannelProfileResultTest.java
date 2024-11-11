@@ -12,7 +12,7 @@ public class ChannelProfileResultTest {
 
     /**
      * @author durai
-     * @autor sushanth
+     * @author sushanth
      * Tests that the channel description returned by {@link ChannelProfileResult#getChannelDescription()}
      * matches the expected description.
      */
