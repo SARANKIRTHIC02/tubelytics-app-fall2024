@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
  * as well as generate word frequency statistics from video descriptions.
  */
 public class TubelyticService {
+    private TubelyticService(){}
     /**
      * Fetches a list of video search results for a given query.
      * Encodes the query using UTF-8 encoding and uses the YouTubeService to retrieve results.

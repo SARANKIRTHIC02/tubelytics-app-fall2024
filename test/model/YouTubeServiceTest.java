@@ -4,24 +4,36 @@ import Util.HttpUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
-import org.junit.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 import java.io.IOException;
 import java.util.List;
-
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import static org.mockito.ArgumentMatchers.anyString;
-
+@ExtendWith(MockitoExtension.class)
 public class YouTubeServiceTest {
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static ObjectMapper objectMapper;
+
+    @BeforeEach
+    public void setUp() {
+        objectMapper = new ObjectMapper();
+    }
 
     @Test
     public void testSearchVideosBasedOnQueryWithValidResponse() throws IOException, InterruptedException {
+        System.out.println("YoutubeService 1");
         String mockApiResponse = "{ \"items\": [ " +
                 "{ \"id\": { \"videoId\": \"testVideoID\" }, " +
-                "\"snippet\": { \"title\": \"Test Title\", \"description\": \"Test Description\", \"thumbnails\": { \"default\": { \"url\": \"testUrl\" } }, \"channelId\": \"testChannelId\", \"channelTitle\": \"Test Channel\"} } ] }";
+                "\"snippet\": { \"title\": \"Test Title\", \"description\": \"Test Description\", " +
+                "\"thumbnails\": { \"default\": { \"url\": \"testUrl\" } }, " +
+                "\"channelId\": \"testChannelId\", \"channelTitle\": \"Test Channel\"} } ] }";
+
         JsonNode mockResponse = objectMapper.readTree(mockApiResponse);
+
         try (MockedStatic<HttpUtils> mockedHttpUtils = Mockito.mockStatic(HttpUtils.class)) {
             mockedHttpUtils.when(() -> HttpUtils.sendRequest(anyString())).thenReturn(mockResponse);
 
@@ -35,6 +47,7 @@ public class YouTubeServiceTest {
 
     @Test
     public void testSearchVideosBasedOnQueryWithNullResponse() throws IOException, InterruptedException {
+        System.out.println("YoutubeService 2");
         try (MockedStatic<HttpUtils> mockedHttpUtils = Mockito.mockStatic(HttpUtils.class)) {
             mockedHttpUtils.when(() -> HttpUtils.sendRequest(anyString())).thenReturn(null);
             List<VideoSearchResult> results = YouTubeService.searchVideosBasedOnQuery("test query");
@@ -45,8 +58,12 @@ public class YouTubeServiceTest {
 
     @Test
     public void testGetChannelProfile_withValidResponse() throws IOException, InterruptedException {
-        String mockChannelApiResponse = "{ \"items\": [ { \"id\": \"testChannelId\", \"snippet\": { \"title\": \"Test Channel Title\", \"description\": \"Test Channel Description\", \"thumbnails\": { \"default\": { \"url\": \"testThumbnailUrl\" } }, \"country\": \"US\" }, \"statistics\": { \"subscriberCount\": \"1000\" } } ] }";
-        String mockVideoApiResponse = "{ \"items\": [ { \"id\": { \"videoId\": \"testVideoId\" }, \"snippet\": { \"title\": \"Test Video\", \"description\": \"Test Description\", \"thumbnails\": { \"default\": { \"url\": \"testVideoThumbnailUrl\" } }, \"channelId\": \"testChannelId\", \"channelTitle\": \"Test Channel\", \"publishedAt\": \"2023-01-01T00:00:00Z\" } } ] }";
+        System.out.println("YoutubeService 3");
+        String mockChannelApiResponse = "{ \"items\": [ " +
+                "{ \"id\": \"testChannelId\", " +
+                "\"snippet\": { \"title\": \"Test Channel Title\", \"description\": \"Test Channel Description\", \"thumbnails\": { \"default\": { \"url\": \"testThumbnailUrl\" } }, \"country\": \"US\" }," +
+                " \"statistics\": { \"subscriberCount\": \"1000\" } } ] }";
+        String mockVideoApiResponse = "{ \"items\": [ { \"id\": { \"videoId\": \"testVideoId\" }, \"snippet\": { \"title\": \"Test Video\", \"description\": \"Test Description\", \"thumbnails\": { \"default\": { \"url\": \"testVideoThumbnailUrl\" } }, \"channelId\": \"testChannelId\", \"channelTitle\": \"Test Channel Title\" } } ] }";
 
         JsonNode mockChannelResponse = objectMapper.readTree(mockChannelApiResponse);
         JsonNode mockVideoResponse = objectMapper.readTree(mockVideoApiResponse);
@@ -68,7 +85,9 @@ public class YouTubeServiceTest {
 
     @Test
     public void testGetChannelProfile_withNullResponse() throws IOException, InterruptedException {
+        System.out.println("YoutubeService 4");
         String mockEmptyItemsResponse = "{ \"items\": [] }";
+        ObjectMapper objectMapper=new ObjectMapper();
         JsonNode mockResponse = objectMapper.readTree(mockEmptyItemsResponse);
 
         try (MockedStatic<HttpUtils> mockedHttpUtils = Mockito.mockStatic(HttpUtils.class)) {

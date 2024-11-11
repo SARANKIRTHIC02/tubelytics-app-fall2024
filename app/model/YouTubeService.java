@@ -2,11 +2,9 @@ package model;
 
 import Util.HttpUtils;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.typesafe.config.ConfigException;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,6 +14,8 @@ import java.util.stream.Collectors;
  * retrieving word statistics from video descriptions.
  */
 public class YouTubeService {
+
+    private YouTubeService(){}
     private static final String apiKey;
     private static final String baseUrl;
     private static final String searchEndpoint;
@@ -23,15 +23,11 @@ public class YouTubeService {
     private static final String videosEndpoint;
 
     static {
-        try {
-            apiKey = "AIzaSyCL43QCR0kOW8iDEgmvgwybGfcaJCgKH10";
+            apiKey = "AIzaSyBgbRCqNg7bJ-tOgJjONAIZ7v3fU_pHKjQ";
             baseUrl = "https://www.googleapis.com/youtube/v3";
             searchEndpoint = "/search?part=snippet";
             channelEndpoint = "/channels?part=snippet,statistics";
             videosEndpoint = "/videos?part=snippet,statistics";
-        } catch (ConfigException.Missing e) {
-            throw new RuntimeException("YouTube API configuration issuef", e);
-        }
     }
 
     /**
@@ -109,6 +105,7 @@ public class YouTubeService {
         String apiUrl = String.format("%s%s&id=%s&key=%s", getApiBaseUrl(), getChannelEndpoint(), channelId, getApiKey());
         JsonNode response = HttpUtils.sendRequest(apiUrl);
 
+        //System.out.println(response);
         if (!response.has("items") || response.get("items").isEmpty()) {
             return null;
         }

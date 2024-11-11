@@ -4,12 +4,13 @@ import model.SearchResponse;
 import model.SearchResponseList;
 import model.VideoSearchResult;
 import org.junit.jupiter.api.Test;
+import play.twirl.api.Content;
 import play.twirl.api.Html;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -75,6 +76,40 @@ public class ytlyticstemplatetest {
         assertEquals("https://www.youtube.com/watch?v=videoId789", videoResult.getVideoUrl());
         assertEquals("Another Test Channel", videoResult.getChannelTitle());
         assertEquals("http://example.com/another_thumb.jpg", videoResult.getThumbnailUrl());
+    }
+    @Test
+    public void testYtlyticsTemplateWithResults() {
+
+        List<VideoSearchResult> videoResults = new ArrayList<>();
+        videoResults.add(new VideoSearchResult(
+                "Sample Video Title",
+                "https://sample.video.url",
+                "Sample Channel Title",
+                "Sample Description",
+                "sampleChannelId",
+                "https://sample.thumbnail.url",
+                Arrays.asList("Tag1", "Tag2")
+        ));
+
+        SearchResponse searchResponse = new SearchResponse("Sample Search Term", videoResults);
+        List<SearchResponse> searchRequests = Collections.singletonList(searchResponse);
+        SearchResponseList searchResponseList = new SearchResponseList(searchRequests, "sampleSessionID");
+
+        Map<String, Long> wordsFiltered = new HashMap<>();
+        wordsFiltered.put("sample", 5L);
+        wordsFiltered.put("term", 3L);
+
+        Content html = views.html.ytlytics.render(searchResponseList, wordsFiltered, "Sample Search Term");
+
+        String renderedContent = contentAsString(html);
+        assertTrue(renderedContent.contains("Welcome to YTLytics"));
+        assertTrue(renderedContent.contains("sampleSessionID"));
+        assertTrue(renderedContent.contains("Sample Search Term"));
+        assertTrue(renderedContent.contains("Sample Video Title"));
+        assertTrue(renderedContent.contains("Sample Channel Title"));
+        assertTrue(renderedContent.contains("Sample Description"));
+        assertTrue(renderedContent.contains("Tag1"));
+        assertTrue(renderedContent.contains("Tag2"));
     }
 
 

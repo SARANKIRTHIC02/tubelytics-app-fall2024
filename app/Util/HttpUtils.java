@@ -15,6 +15,9 @@ import java.net.http.HttpResponse;
  * It uses Java's HttpClient to make requests and Jackson's ObjectMapper to parse JSON responses.
  */
 public class HttpUtils {
+    private HttpUtils(){
+
+    }
     private static final ObjectMapper objectMapper = new ObjectMapper();
     /**
      * Sends an HTTP GET request to the specified API URL and parses the JSON response.
