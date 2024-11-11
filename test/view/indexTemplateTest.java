@@ -7,7 +7,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static play.test.Helpers.contentAsString;
 
+/**
+ * Unit tests for the index view template, verifying correct rendering of the welcome page.
+ */
 public class indexTemplateTest {
+    /**
+     * @author saran
+     * @author durai
+     * Tests the rendering of the welcome view by verifying content type and HTML structure.
+     * Checks that the generated HTML includes the expected title and header elements.
+     */
     @Test
     public void renderWelcomeView() {
         Content html = views.html.index.render();

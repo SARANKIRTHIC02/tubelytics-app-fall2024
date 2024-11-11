@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
+ * @author saran
+ * @author sushanth
+ * @author durai
  * The YouTubeService class provides methods to interact with the YouTube Data API.
  * It allows for searching videos based on a query, fetching channel profile details, and
  * retrieving word statistics from video descriptions.
@@ -31,6 +34,9 @@ public class YouTubeService {
     }
 
     /**
+     * @author durai
+     *  @author saran
+     *  @author sushanth
      * Method return API key.
      * @return API key.
      */
@@ -39,6 +45,7 @@ public class YouTubeService {
     }
 
     /**
+     * @author durai
      * Method to return the base URL for the YouTube Data API.
      * @return Base URL for the API.
      */
@@ -47,6 +54,7 @@ public class YouTubeService {
     }
 
     /**
+     * @author durai
      * Method to return the endpoint for the search API.
      * @return Endpoint for search API.
      */
@@ -55,6 +63,7 @@ public class YouTubeService {
     }
 
     /**
+     * @author durai
      * Method to return the endpoint for channel details API.
      * @return Endpoint for Channel details API.
      */
@@ -63,6 +72,7 @@ public class YouTubeService {
     }
 
     /**
+     * @author durai
      * Method to return the endpoint for video details API.
      * @return Endpoint for video details API.
      */
@@ -71,6 +81,7 @@ public class YouTubeService {
     }
 
     /**
+     * @author durai
      * Searches for videos based on a provided query.
      * Fetches the initial results and then retrieves additional details such as tags for each video.
      * @param query The search term for the video query.
@@ -95,6 +106,8 @@ public class YouTubeService {
     }
 
     /**
+     * @author durai
+     * @author sushanth
      * Retrieves the profile details of a YouTube channel by its ID.
      * @param channelId The unique ID of the YouTube channel.
      * @return A ChannelProfileResult object containing channel details, or null if the channel is not found.
@@ -128,6 +141,8 @@ public class YouTubeService {
     }
 
     /**
+     * @author durai
+     * @author saran
      * Retrieves recent videos from a specified YouTube channel.
      * @param channelId The unique ID of the YouTube channel.
      * @return A list of VideoSearchResult objects containing the recent videos from the channel.
@@ -147,6 +162,7 @@ public class YouTubeService {
     }
 
     /**
+     * @author durai
      * Parses video results from a JSON response and converts them into VideoSearchResult objects.
      *
      * @param response The JSON response from the YouTube Data API.
@@ -171,6 +187,7 @@ public class YouTubeService {
     }
 
     /**
+     * @author sushanth
      * Extracts video IDs from a list of VideoSearchResult objects.
      * @param results A list of VideoSearchResult objects.
      * @return A list of video IDs.
@@ -180,6 +197,7 @@ public class YouTubeService {
     }
 
     /**
+     * @author sushanth
      * Fetches tags for a list of videos based on their IDs.
      * Updates each VideoSearchResult with its corresponding tags.
      * @param videoIds A list of video IDs to fetch tags for.

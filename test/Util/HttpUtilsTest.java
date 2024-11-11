@@ -33,6 +33,10 @@ public class HttpUtilsTest {
     private ObjectMapper objectMapper;
     private MockedStatic<HttpClient> mockedHttpClientStatic;
 
+    /**
+     * @author saran
+     * Sets up the ObjectMapper and mocks HttpClient as a static instance before each test.
+     */
     @BeforeEach
     public void setUp() {
         objectMapper = new ObjectMapper();
@@ -40,11 +44,22 @@ public class HttpUtilsTest {
         mockedHttpClientStatic.when(HttpClient::newHttpClient).thenReturn(mockHttpClient);
     }
 
+    /**
+     * @author saran
+     * Closes the mocked HttpClient static instance after each test.
+     */
     @AfterEach
     public void tearDown() {
         mockedHttpClientStatic.close();
     }
 
+    /**
+     * @author durai
+     * Tests sendRequest with a valid JSON response.
+     * Verifies that the response is correctly parsed to a JsonNode with expected structure and content.
+     *
+     * @throws Exception if there is an error in sending the request or parsing JSON
+     */
     @Test
     public void testSendRequestValidJsonResponse() throws Exception {
         System.out.println("HttpUtilss 1");
@@ -60,6 +75,13 @@ public class HttpUtilsTest {
         assertEquals(expectedNode, actualNode);
     }
 
+    /**
+     * @author durai
+     * Tests sendRequest with a non-JSON response.
+     * Verifies that a JsonParseException is thrown when response content is not JSON.
+     *
+     * @throws Exception if there is an error in sending the request
+     */
     @Test
     public void testSendRequestNonJsonResponse() throws Exception {
         System.out.println("HttpUtilss 2");
@@ -74,6 +96,13 @@ public class HttpUtilsTest {
         assertThrows(JsonParseException.class, () -> HttpUtils.sendRequest(apiUrl));
     }
 
+    /**
+     * @author sushanth
+     * Tests sendRequest when an IOException occurs.
+     * Verifies that the IOException is thrown by sendRequest in case of a network error.
+     *
+     * @throws Exception if there is an error in sending the request
+     */
     @Test
     public void testSendRequestIOException() throws Exception {
         System.out.println("HttpUtilss 3");
@@ -85,6 +114,13 @@ public class HttpUtilsTest {
         assertThrows(IOException.class, () -> HttpUtils.sendRequest(apiUrl));
     }
 
+    /**
+     * @author sushanth
+     * Tests sendRequest when an InterruptedException occurs.
+     * Verifies that the InterruptedException is thrown by sendRequest in case of a request interruption.
+     *
+     * @throws Exception if there is an error in sending the request
+     */
     @Test
     public void testSendRequestInterruptedException() throws Exception {
         System.out.println("HttpUtilss 4");
@@ -97,6 +133,13 @@ public class HttpUtilsTest {
         assertThrows(InterruptedException.class, () -> HttpUtils.sendRequest(apiUrl));
     }
 
+    /**
+     * @author durai
+     * Tests sendRequest with an empty JSON response.
+     * Verifies that an empty JsonNode is returned without any errors.
+     *
+     * @throws Exception if there is an error in sending the request or parsing JSON
+     */
     @Test
     public void testSendRequestEmptyJsonResponse() throws Exception {
         System.out.println("HttpUtilss 5");

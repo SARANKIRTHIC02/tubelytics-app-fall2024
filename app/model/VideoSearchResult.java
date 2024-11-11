@@ -12,6 +12,8 @@ public class VideoSearchResult {
     private String videoUrl;
 
     /**
+     * @author durai
+     * @author sushanth
      * Constructor.
      *
      * @param videoId       The unique ID of the video.
@@ -36,6 +38,7 @@ public class VideoSearchResult {
 
 
     /**
+     * @author durai
      * Returns video ID.
      * @return video ID.
      */
@@ -45,6 +48,7 @@ public class VideoSearchResult {
 
 
     /**
+     * @author durai
      * Returns the title of the video.
      * @return Title of the video.
      */
@@ -53,6 +57,7 @@ public class VideoSearchResult {
     }
 
     /**
+     * @author durai
      * Returns the description of the video.
      *
      * @return description of the video.
@@ -63,6 +68,7 @@ public class VideoSearchResult {
 
 
     /**
+     * @author durai
      * Returns the url of the thumbnail.
      * @return url of the thumbnail.
      */
@@ -72,6 +78,7 @@ public class VideoSearchResult {
 
 
     /**
+     * @author durai
      * Returns the channel ID.
      * @return channel ID.
      */
@@ -80,6 +87,7 @@ public class VideoSearchResult {
     }
 
     /**
+     * @author durai
      * Returns the channel title.
      * @return channel title.
      */
@@ -89,6 +97,7 @@ public class VideoSearchResult {
 
 
     /**
+     * @author durai
      * Returns a list of tags in a video.
      * @return List of tags.
      */
@@ -97,6 +106,7 @@ public class VideoSearchResult {
     }
 
     /**
+     * @author durai
      * Sets the list of tags of a video.
      * @param tags list of tags.
      */
@@ -105,6 +115,7 @@ public class VideoSearchResult {
     }
 
     /**
+     * @author durai
      * Returns the url link of the video.
      * @return url link of the video.
      */

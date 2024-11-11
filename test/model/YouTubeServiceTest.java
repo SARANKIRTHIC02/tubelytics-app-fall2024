@@ -18,11 +18,24 @@ import static org.mockito.ArgumentMatchers.anyString;
 public class YouTubeServiceTest {
     private static ObjectMapper objectMapper;
 
+    /**
+     * @author durai
+     * Initializes the ObjectMapper before each test.
+     */
     @BeforeEach
     public void setUp() {
         objectMapper = new ObjectMapper();
     }
 
+    /**
+     * @author durai
+     * @author saran
+     * Tests searchVideosBasedOnQuery with a valid API response.
+     * Verifies that the result list contains one video with expected video ID and title.
+     *
+     * @throws IOException if there is an error reading JSON
+     * @throws InterruptedException if the request is interrupted
+     */
     @Test
     public void testSearchVideosBasedOnQueryWithValidResponse() throws IOException, InterruptedException {
         System.out.println("YoutubeService 1");
@@ -45,6 +58,14 @@ public class YouTubeServiceTest {
         }
     }
 
+    /**
+     * @author durai
+     * @author saran
+     * Tests searchVideosBasedOnQuery with a null API response.
+     *
+     * @throws IOException if there is an error reading JSON
+     * @throws InterruptedException if the request is interrupted
+     */
     @Test
     public void testSearchVideosBasedOnQueryWithNullResponse() throws IOException, InterruptedException {
         System.out.println("YoutubeService 2");
@@ -56,8 +77,17 @@ public class YouTubeServiceTest {
         }
     }
 
+    /**
+     * @author durai
+     * @author sushanth
+     * Tests getChannelProfile with a valid API response.
+     * Verifies that the profile contains the correct channel ID and a non-empty list of recent videos.
+     *
+     * @throws IOException if there is an error reading JSON
+     * @throws InterruptedException if the request is interrupted
+     */
     @Test
-    public void testGetChannelProfile_withValidResponse() throws IOException, InterruptedException {
+    public void testGetChannelProfileWithValidResponse() throws IOException, InterruptedException {
         System.out.println("YoutubeService 3");
         String mockChannelApiResponse = "{ \"items\": [ " +
                 "{ \"id\": \"testChannelId\", " +
@@ -83,8 +113,17 @@ public class YouTubeServiceTest {
         }
     }
 
+    /**
+     * @author durai
+     * @author sushanth
+     * Tests getChannelProfile with an empty response for a non-existent channel.
+     * Verifies that the returned profile is null.
+     *
+     * @throws IOException if there is an error reading JSON
+     * @throws InterruptedException if the request is interrupted
+     */
     @Test
-    public void testGetChannelProfile_withNullResponse() throws IOException, InterruptedException {
+    public void testGetChannelProfileWithNullResponse() throws IOException, InterruptedException {
         System.out.println("YoutubeService 4");
         String mockEmptyItemsResponse = "{ \"items\": [] }";
         ObjectMapper objectMapper=new ObjectMapper();

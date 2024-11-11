@@ -10,6 +10,12 @@ import java.util.Optional;
 
 public class ChannelProfileResultTest {
 
+    /**
+     * @author durai
+     * @autor sushanth
+     * Tests that the channel description returned by {@link ChannelProfileResult#getChannelDescription()}
+     * matches the expected description.
+     */
     @Test
     public void testGetChannelDescription() {
         ChannelProfileResult result = new ChannelProfileResult(
@@ -20,7 +26,12 @@ public class ChannelProfileResultTest {
 
     }
 
-
+    /**
+     * @author durai
+     * @author sushanth
+     * Tests that the subscriber count returned by {@link ChannelProfileResult#getSubscriberCount()}
+     * matches the expected subscriber count.
+     */
     @Test
     public void testSubscriberCount() {
         ChannelProfileResult result = new ChannelProfileResult(
@@ -31,6 +42,12 @@ public class ChannelProfileResultTest {
 
     }
 
+    /**
+     * @author durai
+     * @author saran
+     * Tests that the thumbnail URL returned by {@link ChannelProfileResult#getChannelThumbnailUrl()}
+     * matches the expected thumbnail URL.
+     */
     @Test
     public void testChannelThumbnailUrl() {
         ChannelProfileResult result = new ChannelProfileResult(
@@ -41,6 +58,12 @@ public class ChannelProfileResultTest {
 
     }
 
+    /**
+     * @author durai
+     * @author saran
+     * Tests that the country code returned by {@link ChannelProfileResult#getCountry()}
+     * matches the expected country code.
+     */
     @Test
     public void testGetCountry() {
         ChannelProfileResult result = new ChannelProfileResult(
@@ -51,6 +74,11 @@ public class ChannelProfileResultTest {
 
     }
 
+    /**
+     * @author durai
+     * Tests that the recent videos list returned by {@link ChannelProfileResult#getRecentVideos()}
+     * matches the expected list of video results. Verifies the size and order of videos.
+     */
     @Test
     public void testGetRecentVideos() {
         VideoSearchResult video1 = new VideoSearchResult("videoId1", "Title 1", "Description 1", "http://thumbnail1.url", "channelId1", "channelTitle1", null);
