@@ -11,10 +11,11 @@ import java.util.Optional;
 public class ChannelProfileResultTest {
 
     /**
-     * @author durai
-     * @author sushanth
+     *
      * Tests that the channel description returned by {@link ChannelProfileResult#getChannelDescription()}
      * matches the expected description.
+     * @author durai
+     * @author sushanth
      */
     @Test
     public void testGetChannelDescription() {
@@ -27,10 +28,11 @@ public class ChannelProfileResultTest {
     }
 
     /**
-     * @author durai
-     * @author sushanth
+     *
      * Tests that the subscriber count returned by {@link ChannelProfileResult#getSubscriberCount()}
      * matches the expected subscriber count.
+     * @author durai
+     *  @author sushanth
      */
     @Test
     public void testSubscriberCount() {
@@ -43,10 +45,11 @@ public class ChannelProfileResultTest {
     }
 
     /**
-     * @author durai
-     * @author saran
+     *
      * Tests that the thumbnail URL returned by {@link ChannelProfileResult#getChannelThumbnailUrl()}
      * matches the expected thumbnail URL.
+     * @author durai
+     * @author saran
      */
     @Test
     public void testChannelThumbnailUrl() {
@@ -59,10 +62,10 @@ public class ChannelProfileResultTest {
     }
 
     /**
-     * @author durai
-     * @author saran
      * Tests that the country code returned by {@link ChannelProfileResult#getCountry()}
      * matches the expected country code.
+     * @author durai
+     * @author saran
      */
     @Test
     public void testGetCountry() {
@@ -75,9 +78,10 @@ public class ChannelProfileResultTest {
     }
 
     /**
-     * @author durai
+     *
      * Tests that the recent videos list returned by {@link ChannelProfileResult#getRecentVideos()}
      * matches the expected list of video results. Verifies the size and order of videos.
+     * @author durai
      */
     @Test
     public void testGetRecentVideos() {

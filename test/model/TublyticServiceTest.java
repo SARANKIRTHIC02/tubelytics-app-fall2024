@@ -14,10 +14,11 @@ public class TublyticServiceTest {
     private static  MockedStatic<VideoSearchResult> videoServiceMock= Mockito.mockStatic(VideoSearchResult.class);
 
     /**
-     * @author durai
-     * @author saran
+     *
      * Tests fetching video results based on a query string, using a mocked YouTubeService.
      * Verifies that the fetched results are not empty and that the video ID matches the expected value.
+     * @author durai
+     * @author saran
      */
     @Test
     public void testFetchResultsWithQuery(){
@@ -30,9 +31,9 @@ public class TublyticServiceTest {
     }
 
     /**
+     * Tests fetching video results with an empty query string.
      * @author durai
      * @author sushanth
-     * Tests fetching video results with an empty query string.
      */
     @Test
     public void testFetchResultsWithOutQuery(){
@@ -42,10 +43,10 @@ public class TublyticServiceTest {
     }
 
     /**
-     * @author durai
-     * @author saran
      * Tests fetching channel details based on a channel ID, using a mocked YouTubeService.
      * Verifies that the channel ID and channel title match expected values.
+     *  @author durai
+     *  @author saran
      */
     @Test
     public void testFetchChannelDetailsWithChannelID(){
@@ -60,6 +61,7 @@ public class TublyticServiceTest {
     /**
      *
      * Tests fetching channel details with an empty channel ID
+     * @author durai
      */
     @Test
     public void testFetchChannelDetailsWithOutChannelID(){
@@ -69,9 +71,9 @@ public class TublyticServiceTest {
     }
 
     /**
+     * Tests that fetching video results throws a RuntimeException when an IOException occurs.
      * @author durai
      * @author saran
-     * Tests that fetching video results throws a RuntimeException when an IOException occurs.
      */
    @Test
     public void testFetchResultsThrowsRuntimeExceptionOnIOException() {
@@ -85,9 +87,9 @@ public class TublyticServiceTest {
     }
 
     /**
-     * @author druai
-     * @author sushanth
      * Tests that fetching video results throws a RuntimeException when an InterruptedException occurs.
+     * @author durai
+     * @author saran
      */
     @Test
     public void testFetchResultsThrowsRuntimeExceptionOnInterruptedException() {
@@ -101,9 +103,9 @@ public class TublyticServiceTest {
     }
 
     /**
+     * Tests that fetching channel details throws a RuntimeException when an IOException occurs.
      * @author durai
      * @author saran
-     * Tests that fetching channel details throws a RuntimeException when an IOException occurs.
      */
     @Test
     public void testFetchChannelDetailsThrowsRuntimeExceptionOnIOException() {
@@ -117,9 +119,9 @@ public class TublyticServiceTest {
     }
 
     /**
+     * Tests that fetching channel details throws a RuntimeException when an InterruptedException occurs.
      * @author durai
      * @author susanth
-     * Tests that fetching channel details throws a RuntimeException when an InterruptedException occurs.
      */
     @Test
     public void testFetchChannelDetailsThrowsRuntimeExceptionOnInterruptedException() {
@@ -133,9 +135,9 @@ public class TublyticServiceTest {
     }
 
     /**
-     * @author saran
-     * @author durai
      * Tests that the word frequency map is empty when given an empty list of video results.
+     * @author durai
+     * @author susanth
      */
     @Test
     public void testEmptyResultsList() {
@@ -146,10 +148,10 @@ public class TublyticServiceTest {
     }
 
     /**
-     * @author saran
-     * @author durai
      * Tests word statistics generation with mixed-case words, verifying case insensitivity.
      * Expected result: words appear in lowercase with correct frequencies.
+     * @author saran
+     * @author durai
      */
     @Test
     public void testWordStatisticsWithWordsUpperAndLowerCase()
@@ -174,10 +176,10 @@ public class TublyticServiceTest {
     }
 
     /**
-     * @author saran
-     * @author durai
      * Tests word statistics generation with words, numbers, and special characters.
      * Verifies correct word frequencies, ignoring non-alphabetic symbols.
+     *  @author saran
+     *  @author durai
      */
     @Test
     public void testWithWordsNumbersAndSpecialCharecters()

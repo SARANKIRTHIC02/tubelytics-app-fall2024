@@ -34,8 +34,8 @@ public class HttpUtilsTest {
     private MockedStatic<HttpClient> mockedHttpClientStatic;
 
     /**
-     * @author saran
      * Sets up the ObjectMapper and mocks HttpClient as a static instance before each test.
+     * @author saran
      */
     @BeforeEach
     public void setUp() {
@@ -45,8 +45,8 @@ public class HttpUtilsTest {
     }
 
     /**
-     * @author saran
      * Closes the mocked HttpClient static instance after each test.
+     * @author saran
      */
     @AfterEach
     public void tearDown() {
@@ -54,11 +54,12 @@ public class HttpUtilsTest {
     }
 
     /**
-     * @author durai
+     *
      * Tests sendRequest with a valid JSON response.
      * Verifies that the response is correctly parsed to a JsonNode with expected structure and content.
      *
      * @throws Exception if there is an error in sending the request or parsing JSON
+     * @author durai
      */
     @Test
     public void testSendRequestValidJsonResponse() throws Exception {
@@ -75,11 +76,12 @@ public class HttpUtilsTest {
     }
 
     /**
-     * @author durai
+     *
      * Tests sendRequest with a non-JSON response.
      * Verifies that a JsonParseException is thrown when response content is not JSON.
      *
      * @throws Exception if there is an error in sending the request
+     * @author durai
      */
     @Test
     public void testSendRequestNonJsonResponse() throws Exception {
@@ -95,11 +97,11 @@ public class HttpUtilsTest {
     }
 
     /**
-     * @author sushanth
      * Tests sendRequest when an IOException occurs.
      * Verifies that the IOException is thrown by sendRequest in case of a network error.
      *
      * @throws Exception if there is an error in sending the request
+     * @author sushanth
      */
     @Test
     public void testSendRequestIOException() throws Exception {
@@ -112,11 +114,11 @@ public class HttpUtilsTest {
     }
 
     /**
-     * @author sushanth
      * Tests sendRequest when an InterruptedException occurs.
      * Verifies that the InterruptedException is thrown by sendRequest in case of a request interruption.
      *
      * @throws Exception if there is an error in sending the request
+     * @author sushanth
      */
     @Test
     public void testSendRequestInterruptedException() throws Exception {
@@ -130,11 +132,12 @@ public class HttpUtilsTest {
     }
 
     /**
-     * @author durai
+     *
      * Tests sendRequest with an empty JSON response.
      * Verifies that an empty JsonNode is returned without any errors.
      *
      * @throws Exception if there is an error in sending the request or parsing JSON
+     * @author durai
      */
     @Test
     public void testSendRequestEmptyJsonResponse() throws Exception {

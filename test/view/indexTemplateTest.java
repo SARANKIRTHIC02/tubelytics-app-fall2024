@@ -12,10 +12,10 @@ import static play.test.Helpers.contentAsString;
  */
 public class indexTemplateTest {
     /**
-     * @author saran
-     * @author durai
      * Tests the rendering of the welcome view by verifying content type and HTML structure.
      * Checks that the generated HTML includes the expected title and header elements.
+     * @author saran
+     * @author durai
      */
     @Test
     public void renderWelcomeView() {

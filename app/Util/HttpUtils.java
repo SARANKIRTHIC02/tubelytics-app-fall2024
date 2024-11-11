@@ -11,11 +11,11 @@ import java.net.http.HttpResponse;
 
 
 /**
+ * The HttpUtils class provides utility methods to send HTTP requests and process responses.
+ * It uses Java's HttpClient to make requests and Jackson's ObjectMapper to parse JSON responses.
  * @author saran
  * @author durai
  * @author sushanth
- * The HttpUtils class provides utility methods to send HTTP requests and process responses.
- * It uses Java's HttpClient to make requests and Jackson's ObjectMapper to parse JSON responses.
  */
 public class HttpUtils {
     private HttpUtils(){
@@ -23,12 +23,12 @@ public class HttpUtils {
     }
     private static final ObjectMapper objectMapper = new ObjectMapper();
     /**
-     * @author durai
      * Sends an HTTP GET request to the specified API URL and parses the JSON response.
      * @param apiUrl The URL of the API endpoint to send the request to.
      * @return A JsonNode representing the JSON response body.
      * @throws IOException If an I/O error occurs when sending or receiving the request.
      * @throws InterruptedException If the operation is interrupted.
+     * @author durai
      */
     public static JsonNode sendRequest(String apiUrl) throws IOException, InterruptedException {
         HttpClient httpClient = HttpClient.newHttpClient();
