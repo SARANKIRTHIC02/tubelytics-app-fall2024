@@ -36,7 +36,6 @@ public class HomeControllerTest extends WithApplication {
 
     @Test
     public void testIndex() {
-        System.out.println("HomeController 1");
         Http.RequestBuilder request = new Http.RequestBuilder()
                 .method(GET)
                 .uri("/");
@@ -47,7 +46,6 @@ public class HomeControllerTest extends WithApplication {
 
     @Test
     public void testYtlyticsWithQuery() throws IOException, InterruptedException {
-        System.out.println("HomeController 2");
         String query = "sampleQuery";
         List<VideoSearchResult> mockResults = new ArrayList<>();
         mockResults.add(new VideoSearchResult("video123", "Sample Video", "Sample description", "thumbnail", "channel123", "Sample Channel", null));
@@ -71,7 +69,6 @@ public class HomeControllerTest extends WithApplication {
 
     @Test
     public void testTaglyticsWithQuery() throws IOException, InterruptedException {
-        System.out.println("HomeController 3");
         String query = "SampleVideo";
         List<VideoSearchResult> mockResults = new ArrayList<>();
         mockResults.add(new VideoSearchResult("video123", "SampleVideo", "Sample description", "thumbnail", "channel123", "Sample Channel", List.of("tag1", "tag2")));
@@ -153,7 +150,6 @@ public class HomeControllerTest extends WithApplication {
             Result result = route(app, request);
             assertEquals(OK, result.status());
             String responseContent = contentAsString(result);
-            System.out.println(responseContent);
             assertTrue(responseContent.contains("<h1 id=\"channelName\">Channel Name: CTV News</h1>"));
         }
     }

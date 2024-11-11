@@ -40,7 +40,7 @@ public class WordStatsTemplateTest extends WithApplication {
 
         String renderedContent = contentAsString(html);
         assertTrue(renderedContent.contains("Word Frequency Statistics"));
-        assertTrue(renderedContent.contains("<tbody>")); // Expecting an empty table body
+        assertTrue(renderedContent.contains("<tbody>"));
     }
 
 
