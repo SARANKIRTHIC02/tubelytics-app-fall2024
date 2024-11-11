@@ -12,8 +12,7 @@ public class VideoSearchResult {
     private String videoUrl;
 
     /**
-     * @author durai
-     * @author sushanth
+     *
      * Constructor.
      *
      * @param videoId       The unique ID of the video.
@@ -23,6 +22,8 @@ public class VideoSearchResult {
      * @param channelId     The unique ID of the channel that published the video.
      * @param channelTitle  The title of the channel that published the video.
      * @param tags          A list of tags associated with the video.
+     *                      @author durai
+     *    @author sushanth
      */
     public VideoSearchResult(String videoId, String title, String description, String thumbnailUrl,
                              String channelId, String channelTitle, List<String> tags) {
@@ -38,9 +39,10 @@ public class VideoSearchResult {
 
 
     /**
-     * @author durai
+     *
      * Returns video ID.
      * @return video ID.
+     * @author durai
      */
     public String getVideoId() {
         return videoId;
@@ -48,9 +50,10 @@ public class VideoSearchResult {
 
 
     /**
-     * @author durai
+     *
      * Returns the title of the video.
      * @return Title of the video.
+     * @author durai
      */
     public String getTitle() {
         return title;
@@ -68,9 +71,10 @@ public class VideoSearchResult {
 
 
     /**
-     * @author durai
+     *
      * Returns the url of the thumbnail.
      * @return url of the thumbnail.
+     * @author durai
      */
     public String getThumbnailUrl() {
         return thumbnailUrl;
@@ -78,18 +82,20 @@ public class VideoSearchResult {
 
 
     /**
-     * @author durai
+     *
      * Returns the channel ID.
      * @return channel ID.
+     * @author durai
      */
     public String getChannelId() {
         return channelId;
     }
 
     /**
-     * @author durai
+     *
      * Returns the channel title.
      * @return channel title.
+     *  @author durai
      */
     public String getChannelTitle() {
         return channelTitle;
@@ -97,27 +103,30 @@ public class VideoSearchResult {
 
 
     /**
-     * @author durai
+     *
      * Returns a list of tags in a video.
      * @return List of tags.
+     * @author durai
      */
     public List<String> getTags() {
         return tags;
     }
 
     /**
-     * @author durai
+     *
      * Sets the list of tags of a video.
      * @param tags list of tags.
+     *             @author durai
      */
     public void setTags(List<String> tags) {
         this.tags = tags;
     }
 
     /**
-     * @author durai
+     *
      * Returns the url link of the video.
      * @return url link of the video.
+     * @author durai
      */
     public String getVideoUrl()
     {

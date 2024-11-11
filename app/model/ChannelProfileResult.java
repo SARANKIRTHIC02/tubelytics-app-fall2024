@@ -3,11 +3,12 @@ package model;
 import java.util.List;
 
 /**
- *  @author durai
- * @author sushanth
+ *
  *
  * The class represents a YouTube channel profile, including details like channel ID, title, description, subscriber
  * count, thumbnail URL, country, and a list of recent videos.
+ * @author durai
+ * @author sushanth
  */
 public class ChannelProfileResult {
     private String channelId;
@@ -20,7 +21,6 @@ public class ChannelProfileResult {
 
     /**
      * Constructor.
-     * @author durai
      * @param channelId the unique identifier of the YouTube channel.
      * @param channelTitle the title or name of the channel.
      * @param channelDescription a description of the channel content.
@@ -28,6 +28,7 @@ public class ChannelProfileResult {
      * @param channelThumbnailUrl the URL of the channel's thumbnail image.
      * @param country the country where the channel is based, if available.
      * @param recentVideos a list of recent videos published by the channel.
+     *                     @author durai
      */
     public ChannelProfileResult(String channelId, String channelTitle, String channelDescription, Long subscriberCount,
                                 String channelThumbnailUrl, String country, List<VideoSearchResult> recentVideos) {
@@ -42,28 +43,31 @@ public class ChannelProfileResult {
 
     // Getters and Setters
     /**
-     * @author durai
+     *
      * Gets the unique identifier of the YouTube channel.
      *
      * @return the channel ID.
+     * @author durai
      */
     public String getChannelId() {
         return channelId;
     }
 
     /**
-     * @author durai
+     *
      * Gets the title or name of the YouTube channel.
      *
      * @return the channel title.
+     * @author durai
      */
     public String getChannelTitle() {
         return channelTitle;
     }
 
     /**
-     * @author durai
+     *
      * Gets the description of the YouTube channel.
+     * @author durai
      *
      * @return the channel description.
      */
@@ -72,29 +76,31 @@ public class ChannelProfileResult {
     }
 
     /**
-     * @author durai
+     *
      * Gets the subscriber count of the YouTube channel.
      *
      * @return the subscriber count.
+     * @author durai
      */
     public Long getSubscriberCount() {
         return subscriberCount;
     }
 
     /**
-     * @author durai
+     *
      * Gets the URL of the YouTube channel's thumbnail image.
      *
      * @return the channel thumbnail URL.
+     * @author durai
      */
     public String getChannelThumbnailUrl() {
         return channelThumbnailUrl;
     }
 
     /**
-     * @author durai
-     * Gets the list of recent videos published by the channel.
      *
+     * Gets the list of recent videos published by the channel.
+     * @author durai
      * @return a list of {@code VideoSearchResult} representing recent videos.
      */
     public List<VideoSearchResult> getRecentVideos() {
@@ -102,9 +108,9 @@ public class ChannelProfileResult {
     }
 
     /**
-     * @author durai
-     * Gets the country where the YouTube channel is based, if available.
      *
+     * Gets the country where the YouTube channel is based, if available.
+     * @author durai
      * @return the country of the channel, or "-" if not specified.
      */
     public String getCountry(){

@@ -19,8 +19,8 @@ public class YouTubeServiceTest {
     private static ObjectMapper objectMapper;
 
     /**
-     * @author durai
      * Initializes the ObjectMapper before each test.
+     * @author durai
      */
     @BeforeEach
     public void setUp() {
@@ -28,13 +28,13 @@ public class YouTubeServiceTest {
     }
 
     /**
-     * @author durai
-     * @author saran
      * Tests searchVideosBasedOnQuery with a valid API response.
      * Verifies that the result list contains one video with expected video ID and title.
      *
      * @throws IOException if there is an error reading JSON
      * @throws InterruptedException if the request is interrupted
+     * @author durai
+     * @author saran
      */
     @Test
     public void testSearchVideosBasedOnQueryWithValidResponse() throws IOException, InterruptedException {
@@ -58,12 +58,12 @@ public class YouTubeServiceTest {
     }
 
     /**
-     * @author durai
-     * @author saran
      * Tests searchVideosBasedOnQuery with a null API response.
      *
      * @throws IOException if there is an error reading JSON
      * @throws InterruptedException if the request is interrupted
+     * @author durai
+     * @author saran
      */
     @Test
     public void testSearchVideosBasedOnQueryWithNullResponse() throws IOException, InterruptedException {
@@ -76,13 +76,13 @@ public class YouTubeServiceTest {
     }
 
     /**
-     * @author durai
-     * @author sushanth
      * Tests getChannelProfile with a valid API response.
      * Verifies that the profile contains the correct channel ID and a non-empty list of recent videos.
      *
      * @throws IOException if there is an error reading JSON
      * @throws InterruptedException if the request is interrupted
+     * @author durai
+     * @author sushanth
      */
     @Test
     public void testGetChannelProfileWithValidResponse() throws IOException, InterruptedException {
@@ -111,13 +111,13 @@ public class YouTubeServiceTest {
     }
 
     /**
-     * @author durai
-     * @author sushanth
      * Tests getChannelProfile with an empty response for a non-existent channel.
      * Verifies that the returned profile is null.
      *
      * @throws IOException if there is an error reading JSON
      * @throws InterruptedException if the request is interrupted
+     * @author durai
+     * @author sushanth
      */
     @Test
     public void testGetChannelProfileWithNullResponse() throws IOException, InterruptedException {
