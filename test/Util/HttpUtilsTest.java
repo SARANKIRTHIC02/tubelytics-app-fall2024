@@ -47,6 +47,7 @@ public class HttpUtilsTest {
 
     @Test
     public void testSendRequestValidJsonResponse() throws Exception {
+        System.out.println("HttpUtilss 1");
         String apiUrl = "http://example.com/api";
         String validJson = "{\"key\":\"value\"}";
         JsonNode expectedNode = objectMapper.readTree(validJson);
@@ -61,6 +62,7 @@ public class HttpUtilsTest {
 
     @Test
     public void testSendRequestNonJsonResponse() throws Exception {
+        System.out.println("HttpUtilss 2");
         String apiUrl = "http://example.com/api";
         String nonJsonResponse = "<html><body>Not JSON</body></html>";
 
@@ -74,6 +76,7 @@ public class HttpUtilsTest {
 
     @Test
     public void testSendRequestIOException() throws Exception {
+        System.out.println("HttpUtilss 3");
         String apiUrl = "http://example.com/api";
 
         when(mockHttpClient.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class)))
@@ -84,6 +87,7 @@ public class HttpUtilsTest {
 
     @Test
     public void testSendRequestInterruptedException() throws Exception {
+        System.out.println("HttpUtilss 4");
         String apiUrl = "http://example.com/api";
 
         when(mockHttpClient.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class)))
@@ -95,6 +99,7 @@ public class HttpUtilsTest {
 
     @Test
     public void testSendRequestEmptyJsonResponse() throws Exception {
+        System.out.println("HttpUtilss 5");
         String apiUrl = "http://example.com/api";
         String emptyJson = "{}";
         JsonNode expectedNode = objectMapper.readTree(emptyJson);

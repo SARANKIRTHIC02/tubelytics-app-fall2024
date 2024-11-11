@@ -1,58 +1,48 @@
 package view;
 
-import org.junit.jupiter.api.Test;
-import play.mvc.Result;
+import org.junit.Test;
+
 import play.test.WithApplication;
-import views.html.wordStats;
+import play.twirl.api.Content;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static play.mvc.Results.ok;
+import static org.junit.Assert.assertTrue;
 import static play.test.Helpers.contentAsString;
 
 public class WordStatsTemplateTest extends WithApplication {
 
     @Test
-    public void testWordFrequencyRendering() {
+    public void testWordFrequencyTemplateWithData() {
         Map<String, Long> wordFrequency = new HashMap<>();
-        wordFrequency.put("Java", 50L);
-        wordFrequency.put("Scala", 30L);
-        wordFrequency.put("Play", 20L);
-        wordFrequency.put("Framework", 10L);
+        wordFrequency.put("sample", 10L);
+        wordFrequency.put("test", 5L);
+        wordFrequency.put("frequency", 3L);
 
-        Result result = ok(wordStats.render(wordFrequency));
+        Content html = views.html.wordStats.render(wordFrequency);
 
-        String html = contentAsString(result);
-
-        assertTrue(html.contains("Java"));
-        assertTrue(html.contains("50"));
-        assertTrue(html.contains("Scala"));
-        assertTrue(html.contains("30"));
-        assertTrue(html.contains("Play"));
-        assertTrue(html.contains("20"));
-        assertTrue(html.contains("Framework"));
-        assertTrue(html.contains("10"));
-
-        assertTrue(html.contains("<table"));
-        assertTrue(html.contains("</table>"));
+        String renderedContent = contentAsString(html);
+        assertTrue(renderedContent.contains("Word Frequency Statistics"));
+        assertTrue(renderedContent.contains("<td>sample</td>"));
+        assertTrue(renderedContent.contains("<td>10</td>"));
+        assertTrue(renderedContent.contains("<td>test</td>"));
+        assertTrue(renderedContent.contains("<td>5</td>"));
+        assertTrue(renderedContent.contains("<td>frequency</td>"));
+        assertTrue(renderedContent.contains("<td>3</td>"));
     }
 
     @Test
-    public void testEmptyWordFrequency() {
+    public void testWordFrequencyTemplateWithoutData() {
         Map<String, Long> wordFrequency = new HashMap<>();
 
-        Result result = ok(wordStats.render(wordFrequency));
+        Content html = views.html.wordStats.render(wordFrequency);
 
-        String html = contentAsString(result);
-
-        assertTrue(html.contains("<table"));
-        assertTrue(html.contains("</table>"));
-        assertFalse(html.contains("Java"));
-        assertFalse(html.contains("50"));
+        String renderedContent = contentAsString(html);
+        assertTrue(renderedContent.contains("Word Frequency Statistics"));
+        assertTrue(renderedContent.contains("<tbody>")); // Expecting an empty table body
     }
+
 
 
 }

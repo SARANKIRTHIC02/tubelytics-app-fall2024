@@ -53,14 +53,6 @@ public class VideoSearchResult {
     }
 
     /**
-     * Sets the title of the video.
-     * @param title title of the video.
-     */
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    /**
      * Returns the description of the video.
      *
      * @return description of the video.
@@ -69,13 +61,6 @@ public class VideoSearchResult {
         return description;
     }
 
-    /**
-     * Sets the description of the video to the variable.
-     * @param description sets the description of the video.
-     */
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
     /**
      * Returns the url of the thumbnail.
