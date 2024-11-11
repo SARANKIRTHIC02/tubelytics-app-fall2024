@@ -2,6 +2,7 @@ package model;
 import java.util.List;
 
 /**
+ * @author durai
  * The class represents a response containing a title and a list of video search results.
  * This class is used to encapsulate the search results from a specific query or topic.
  */
@@ -10,6 +11,7 @@ public class SearchResponse {
     private List<VideoSearchResult> results;
 
     /**
+     * @author durai
      * Constructor.
      *
      * @param title the title or query associated with the search results.
@@ -21,6 +23,7 @@ public class SearchResponse {
     }
 
     /**
+     * @author durai
      * Gets the title or query associated with the search results.
      *
      * @return the title of the search response.
@@ -31,6 +34,7 @@ public class SearchResponse {
 
 
     /**
+     * @author durai
      * Gets the list of video search results.
      *
      * @return a list of VideoSearchResult representing the video search results.
