@@ -9,6 +9,18 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import akka.actor.ActorSystem;
+import akka.actor.Props;
+import akka.actor.ActorRef;
+import akka.stream.Materializer;
+import play.mvc.WebSocket;
+
+import javax.inject.Inject;
+import play.libs.streams.ActorFlow;
+
+
+
+import actors.WebSocketActor;
 
 /**
  *
@@ -20,6 +32,23 @@ import java.util.concurrent.CompletionStage;
  * @author sushanth
  */
 public class HomeController extends Controller {
+    private final ActorSystem actorSystem;
+    private final Materializer materializer;
+
+    @Inject
+    public HomeController(ActorSystem actorSystem, Materializer materializer) {
+        this.actorSystem = actorSystem;
+        this.materializer = materializer;
+    }
+
+    public WebSocket ytlyticsWebSocket() {
+        return WebSocket.Text.accept(request -> {
+            // Create an Akka actor fActoror each WebSocket connection
+            ActorRef webSocketActor = actorSystem.actorOf(Props.create(WebSocketActor.class));
+            return WebSocket.ActorFlow.actorRef(out -> Props.create(WebSocketActor.class, out));
+        });
+    }
+
 
     public SearchResponseList accumulatedResults=new SearchResponseList(new ArrayList<>(),UUID.randomUUID().toString());
 
@@ -102,7 +131,6 @@ public class HomeController extends Controller {
             return ok(views.html.channelprofile.render(channelProfileInfo));
         });
     }
-
     /**
      * Fetches tags for a specific video based on the video ID and renders the channel profile page.
      *
@@ -121,7 +149,6 @@ public class HomeController extends Controller {
             return ok(views.html.channelprofile.render(channelProfileInfo));
         });
     }
-
     /**
      *
      * Analyzes word statistics based on a search query and renders the word statistics page.
@@ -136,5 +163,4 @@ public class HomeController extends Controller {
             Map<String, Long> wordsFiltered = TubelyticService.wordStatistics(newResults);
             return ok(views.html.wordStats.render(wordsFiltered));});
     }
-
 }

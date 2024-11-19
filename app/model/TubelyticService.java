@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import java.time.Duration;
+import akka.stream.javadsl.Source;
+import model.VideoSearchResult;
 
 /**
  *
@@ -26,6 +29,13 @@ public class TubelyticService {
      * @return A list of VideoSearchResult objects matching the query.
      * @author durai
      */
+
+    public static Source<VideoSearchResult, ?> streamResults(String query) {
+        return Source.tick(Duration.ZERO, Duration.ofSeconds(2), query) // Tick every 2 seconds
+                .mapConcat(TubelyticService::fetchResults); // Fetch new results
+    }
+
+
     public static  List<VideoSearchResult> fetchResults(String query) {
         query= URLEncoder.encode(query, StandardCharsets.UTF_8);
         List<VideoSearchResult> results= new ArrayList<>();

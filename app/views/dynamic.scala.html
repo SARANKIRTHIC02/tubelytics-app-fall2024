@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Reactive YouTube Analytics</title>
+    <script>
+        let socket;
+
+        function startSearch(query) {
+            // Establish a WebSocket connection
+            socket = new WebSocket("ws://localhost:9000/ytlyticsWebSocket");
+
+            socket.onopen = () => {
+                console.log("WebSocket connection established.");
+                socket.send(query); // Send the search query to the server
+            };
+
+            socket.onmessage = (event) => {
+                // Handle incoming search results
+                const result = JSON.parse(event.data);
+                const resultsContainer = document.getElementById("results");
+
+                const resultElement = document.createElement("div");
+                resultElement.innerHTML = `<h3>${result.title}</h3><p>${result.description}</p>`;
+                resultsContainer.appendChild(resultElement);
+            };
+
+            socket.onclose = () => console.log("WebSocket connection closed.");
+            socket.onerror = (error) => console.error("WebSocket error:", error);
+        }
+    </script>
+</head>
+<body>
+<h1>Real-Time YouTube Analytics</h1>
+<input type="text" id="queryInput" placeholder="Enter search query">
+<button onclick="startSearch(document.getElementById('queryInput').value)">Search</button>
+<div id="results"></div>
+</body>
+</html>

@@ -35,6 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @author sushanth
  */
 public class HomeControllerTest extends WithApplication {
+
     @InjectMocks
     private HomeController homeController;
     /**
