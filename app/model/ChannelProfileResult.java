@@ -19,6 +19,9 @@ public class ChannelProfileResult {
     private String country;
     private List<VideoSearchResult> recentVideos;
 
+    public ChannelProfileResult() {
+    }
+
     /**
      * Constructor.
      * @param channelId the unique identifier of the YouTube channel.

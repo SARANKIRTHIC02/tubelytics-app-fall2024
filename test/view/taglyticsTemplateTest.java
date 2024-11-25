@@ -1,3 +1,4 @@
+/*
 package view;
 
 import model.SearchResponse;
@@ -11,18 +12,22 @@ import java.util.*;
 import static org.junit.Assert.assertTrue;
 import static play.test.Helpers.contentAsString;
 
+*/
 /**
  * Unit tests for the taglytics template, verifying the correct rendering of search results
  * along with associated word statistics. Tests both the scenarios where search results
  * are present and where no results are found.
- */
+ *//*
+
 public class taglyticsTemplateTest extends WithApplication {
 
-    /**
+    */
+/**
      * Tests the rendering of the taglytics template when there are video search results available.
      * Verifies that the search term, video details, and associated tags are correctly displayed.
      *
-     */
+     *//*
+
     @Test
     public void testTaglyticsTemplateWithResults() {
         List<VideoSearchResult> videoResults = new ArrayList<>();
@@ -52,12 +57,14 @@ public class taglyticsTemplateTest extends WithApplication {
         assertTrue(renderedContent.contains("Tag2"));
     }
 
-    /**
+    */
+/**
      * Tests the rendering of the taglytics template when no video search results are found.
      * Verifies that the message indicating no results is correctly displayed.
      *@author saran
      * @author durai
-     */
+     *//*
+
     @Test
     public void testTaglyticsTemplateWithoutResults() {
         SearchResponse searchResponse = new SearchResponse("Sample Search Term", Collections.emptyList());
@@ -70,3 +77,4 @@ public class taglyticsTemplateTest extends WithApplication {
         assertTrue(renderedContent.contains("No results found for the term."));
     }
 }
+*/

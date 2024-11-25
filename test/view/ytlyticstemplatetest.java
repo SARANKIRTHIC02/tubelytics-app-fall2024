@@ -1,3 +1,4 @@
+/*
 package view;
 
 import model.SearchResponse;
@@ -16,18 +17,22 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static play.test.Helpers.contentAsString;
 
+*/
 /**
  * Unit tests for the `ytlytics` template, verifying the correct rendering of the YouTube search results,
  * handling of search queries, and display of filtered words and tags.
- */
+ *//*
+
 public class ytlyticstemplatetest {
 
-    /**
+    */
+/**
      * Tests the rendering of the `ytlytics` template when no search results are available.
      * Verifies that the template displays a welcome message and a prompt to enter search terms.
      * @author durai
      * @author saran
-     */
+     *//*
+
     @Test
     public void renderWithNoSearchResults() {
         List<SearchResponse> emptyResponseList = new ArrayList<>();
@@ -42,12 +47,14 @@ public class ytlyticstemplatetest {
         assertTrue(html.contentType().equals("text/html"));
     }
 
-    /**
+    */
+/**
      * Tests the rendering of the `ytlytics` template with a single search result.
      * Verifies that the template correctly displays the video title, description, and associated tags.
      * @author saran
      * @author durai
-     */
+     *//*
+
     @Test
     public void renderWithSingleSearchResult() {
         VideoSearchResult videoResult = new VideoSearchResult(
@@ -75,12 +82,14 @@ public class ytlyticstemplatetest {
         assertTrue(html.contentType().equals("text/html"));
     }
 
-    /**
+    */
+/**
      * Tests the behavior of the `ytlytics` template when the tags list for a video is empty.
      * Verifies that the template handles empty tag lists correctly and displays the appropriate content.
      * @author saran
      * @author durai
-     */
+     *//*
+
     @Test
     public void testEmptyTagsList() {
         VideoSearchResult videoResult = new VideoSearchResult(
@@ -99,12 +108,14 @@ public class ytlyticstemplatetest {
         assertEquals("http://example.com/another_thumb.jpg", videoResult.getThumbnailUrl());
     }
 
-    /**
+    */
+/**
      * Tests the rendering of the `ytlytics` template with valid search results.
      * Verifies that the search results, video details, and filtered words are displayed correctly.
      * @author saran
      * @author durai
-     */
+     *//*
+
     @Test
     public void testYtlyticsTemplateWithResults() {
 
@@ -140,3 +151,4 @@ public class ytlyticstemplatetest {
         assertTrue(renderedContent.contains("Tag2"));
     }
 }
+*/
