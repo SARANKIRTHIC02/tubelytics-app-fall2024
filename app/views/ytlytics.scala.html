@@ -78,8 +78,7 @@
                                 <p>
                                     <b>Video Title:</b>
                                     <a href="${result.videoUrl}" target="_blank">${result.title}</a>
-                                    <b>Channel:</b>
-                                    <a href="/channel/${result.channelId}" target="_blank">${result.channelTitle}</a>
+                                    <b>Channel:</b> <a href="/channel/${result.channelId}" target="_blank">${result.channelTitle}</a>
                                     <b>Description:</b> ${result.description}
                                     <b>Tags:</b>
                                     ${result.tags.map(tag => `<a href="#" class="tag-link">${tag}</a>`).join(", ")}
