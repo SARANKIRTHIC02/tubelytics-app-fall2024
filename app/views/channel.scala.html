@@ -4,37 +4,28 @@
 @main("Channel Profile") {
     <head>
         <title>Channel Profile</title>
-            <!-- Link to CSS -->
         <link rel="stylesheet" type="text/css" href="@routes.Assets.versioned("stylesheets/channel.css")">
     </head>
 
     <body>
         <section id="channel">
             <div class="wrapper">
-                    <!-- Header Section -->
-                <h1>Channel Profile</h1>
-
-                    <!-- Channel Information Section -->
                 <div id="channelInfo">
-
+                        <!-- Channel Information Section -->
                 </div>
 
-                    <!-- Latest Videos Section -->
                 <h3>Channel Videos</h3>
                     <div id="results">
-
+                            <!-- Latest Videos Section -->
                     </div>
             </div>
         </section>
 
         <script>
-                // WebSocket for dynamic updates
                 const socket = new WebSocket("ws://localhost:9000/ws");
 
-                // Event handlers for WebSocket
                 socket.onopen = () => {
                     console.log("WebSocket connected for channel profile");
-                    // Send a request for channel details
                     socket.send(`channel:${"@channelId"}`);
                 };
 
@@ -46,18 +37,17 @@
                 socket.onclose = () => console.log("WebSocket closed");
                 socket.onerror = (error) => console.error("WebSocket error:", error);
 
-                // Function to update channel information dynamically
+
                 function updateChannelProfile(profile) {
                     console.log("Channel Profile Updated:", profile);
-
-                    // Update channel info
                     document.getElementById("channelInfo").innerHTML = `
-                    <h2>${profile.channelTitle}</h2>
-                    <p>${profile.channelDescription}</p>
+                    <h1>Channel Name: ${profile.channelTitle}</h1>
+                    <img src="${profile.channelThumbnailUrl}" alt="Channel Thumbnail" class="channel-thumbnail" />
+                    <p><b>Description:</b>${profile.channelDescription}</p>
+                    <p><b>Country: </b>${profile.country}<p>
                     <p><b>Subscribers:</b> ${profile.subscriberCount}</p>
                 `;
 
-                    // Update recent videos
                     const resultsContainer = document.getElementById("results");
                     if (profile.recentVideos && profile.recentVideos.length > 0) {
                         resultsContainer.innerHTML = `
@@ -66,9 +56,9 @@
                                 <li class="result-item">
                                     <div class="result-content">
                                         <div class="text-content">
-                                            <p><b>Title:</b> <a href="${video.videoUrl}" target="_blank">${video.title}</a></p>
-                                            <p><b>Description:</b> ${video.description}</p>
-                                            <p><b>Tags:</b>
+                                            <p><b>Title:</b> <a href="${video.videoUrl}" target="_blank">${video.title}</a>
+                                            <b>Description:</b> ${video.description}
+                                            <b>Tags:</b>
                                                 ${video.tags.map(tag => `<a href="/taglytics/${tag}" target="_blank">${tag}</a>`).join(", ")}
                                             </p>
                                         </div>
