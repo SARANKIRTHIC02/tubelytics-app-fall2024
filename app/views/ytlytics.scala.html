@@ -2,48 +2,99 @@
 @(models: SearchResponseList, wordsFiltered: Map[String, Long], searchQuery: String)
 
 @main("YTLytics") {
-    <section id="top">
-        <div class="wrapper">
-            <h1>Welcome to YTLytics</h1>
-            <form method="get">
-                <input name="query" placeholder="Enter search terms" required>
-                <input type="hidden" name="sessionId" value="@models.getSessionID">
-                <button type="submit">Go!</button>
-            </form>
-        </div>
-    </section>
+    <head>
+        <title>YTLytics</title>
+            <!-- Link to CSS -->
+        <link rel="stylesheet" type="text/css" href="@routes.Assets.versioned("stylesheets/ytlytics.css")">
+    </head>
 
-    @if(!models.getRequestModels().isEmpty()) {
-        <section id="results">
+    <body>
+            <!-- Header Section -->
+        <section id="top">
             <div class="wrapper">
-            @for(searchReq <- models.getRequestModels()) {
-                <div style="margin-top: 40px;">
-                @if(!searchReq.getResults().isEmpty()) {
-                    <h2>Search Results for term: @searchReq.getTitle()</h2>
-                    <p id="wordStat"><a href="@routes.HomeController.wordStats(searchReq.getTitle())" target="_blank">Word Stats</a></p>
-                    <ol>
-                    @for(result <- searchReq.getResults()) {
-                        <li class="result-item">
-                            <div class="result-content">
-                                <div class="text-content">
-                                    <p><b>Title:</b> <a href="@result.getVideoUrl" target="_blank">@result.getTitle</a>
-                                        <b>Channel:</b> <a href="@routes.HomeController.channelVideos(result.getChannelId())" target="_blank">@result.getChannelTitle</a>
-                                        <b>Description:</b> @result.getDescription
-                                        <b>Tags: </b>
-                                        @for(tag <- result.getTags) {
-                                            <a href="@routes.HomeController.taglytics(tag)" target="_blank">@tag</a>
-                                        }
-                                    </p>
-                                </div>
-                                <img src="@result.getThumbnailUrl" alt="Video Thumbnail" class="thumbnail">
-                            </div>
-                        </li>
-                    }
-                    </ol>
-                }
-                </div>
-            }
+                <h1>Welcome to YTLytics</h1>
+                    <!-- Search Form -->
+                <form method="get">
+                    <input name="query" placeholder="Enter search terms" id="searchForm" required>
+                    <input type="hidden" name="sessionId" value="@models.getSessionID">
+                    <button type="submit" id="submitButton">Go!</button>
+                </form>
             </div>
         </section>
-    }
+
+            <!-- Results Section -->
+        <section id="results">
+            <div class="wrapper">
+                <h2>Search History</h2>
+                <div id="history">
+                        <!-- Dynamic search history will be rendered here -->
+                </div>
+            </div>
+        </section>
+
+        <script>
+                // Generate or retrieve session ID
+                let sessionId = localStorage.getItem("sessionId");
+                if (!sessionId) {
+                    sessionId = crypto.randomUUID(); // Generate a new session ID
+                    localStorage.setItem("sessionId", sessionId);
+                }
+
+                // Create WebSocket connection
+                const socket = new WebSocket(`ws://localhost:9000/ws?sessionId=${sessionId}`);
+
+                // Maintain user search history dynamically
+                const historyContainer = document.getElementById("history");
+
+                socket.onopen = () => console.log(`WebSocket connected with session ID: ${sessionId}`);
+                socket.onmessage = (event) => handleNewSearch(JSON.parse(event.data));
+                socket.onclose = () => console.log("WebSocket closed");
+                socket.onerror = (error) => console.error("WebSocket error:", error);
+
+                // Handle form submission
+                document.getElementById("submitButton").onclick = function (event) {
+                    event.preventDefault(); // Prevent default form submission
+                    const query = document.getElementById("searchForm").value.trim();
+                    if (query) {
+                        console.log(`Sending query: ${query}`);
+                        socket.send(query); // Send the query to the WebSocket server
+                    } else {
+                        console.error("Query is empty. Not sending.");
+                    }
+                };
+
+                // Handle new search results and update the UI dynamically
+                function handleNewSearch({ query, results }) {
+                    // Create a new section for the query and its results
+                    const querySection = document.createElement("div");
+                    querySection.classList.add("search-entry");
+                    querySection.innerHTML = `
+            <h3>Search for: "${query}"</h3>
+            <ol>
+                ${results.map((result) => `
+                    <li class="result-item">
+                        <div class="result-content">
+                            <div class="text-content">
+                                <p>
+                                    <b>Video Title:</b>
+                                    <a href="${result.videoUrl}" target="_blank">${result.title}</a>
+                                    <b>Channel:</b>
+                                    <a href="/channel/${result.channelId}" target="_blank">${result.channelTitle}</a>
+                                    <b>Description:</b> ${result.description}
+                                    <b>Tags:</b>
+                                    ${result.tags.map(tag => `<a href="#" class="tag-link">${tag}</a>`).join(", ")}
+                                </p>
+                            </div>
+                            <img src="${result.thumbnailUrl}" alt="Video Thumbnail" class="thumbnail">
+                        </div>
+                    </li>
+                `).join("")}
+            </ol>
+        `;
+
+                    // Add the new section to the top of the history container
+                    historyContainer.prepend(querySection);
+                }
+        </script>
+    </body>
 }

@@ -33,6 +33,10 @@ public class TubelyticService {
         if (!query.isEmpty()) {
             try {
                 results= YouTubeService.searchVideosBasedOnQuery(query);
+                Set<String> seenIds = new HashSet<>();
+                return results.stream()
+                        .filter(result -> seenIds.add(result.getVideoId())) // Filter duplicates
+                        .collect(Collectors.toList());
             } catch (IOException | InterruptedException e) {
                 throw new RuntimeException(e);
             }

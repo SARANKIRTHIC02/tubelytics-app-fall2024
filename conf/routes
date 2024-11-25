@@ -1,21 +1,24 @@
 # Routes
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
+# Home Controller
+# Serve the WebSocket server
+GET     /ws                controllers.HomeController.ytlyticsWebSocket
 
-# Home page
-GET     /                           controllers.HomeController.index(request: play.mvc.Http.Request)
-
-# Static resources
+# Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
 
-# YouTube analytics
-GET     /ytlytics                   controllers.HomeController.ytlytics(request: play.mvc.Http.Request, query: java.util.Optional[String])
+# WebSocket endpoint for real-time communication
+GET     /ytlytics       controllers.HomeController.ytlytics
+GET     /channel/:id              controllers.HomeController.channelProfile(id: String)
 
-# Channel videos
-GET     /ytlytics/channel/:channelId controllers.HomeController.channelVideos( channelId: String)
 
-# Word statistics
-GET     /wordStatistics/:searchQuery controllers.HomeController.wordStats(searchQuery: String)
+# Word statistics for a specific search query
+#GET     /wordStats/:query            controllers.HomeController.wordStats(query: String)
 
-# Tag analytics
-GET     /ytlytics/tags/:query       controllers.HomeController.taglytics(query: String)
+# Videos from a specific channel
+#GET     /channelVideos/:channelId    controllers.HomeController.channelVideos(channelId: String)
+
+# Tag-specific analytics
+#GET     /taglytics/:tag              controllers.HomeController.taglytics(tag: String)
+
