@@ -120,4 +120,16 @@ public class ChannelProfileResult {
         return country;
     }
 
+    @Override
+    public String toString() {
+        return "ChannelProfileResult{" +
+                "channelId='" + channelId + '\'' +
+                ", channelTitle='" + channelTitle + '\'' +
+                ", channelDescription='" + channelDescription + '\'' +
+                ", subscriberCount=" + subscriberCount +
+                ", channelThumbnailUrl='" + channelThumbnailUrl + '\'' +
+                ", country='" + country + '\'' +
+                ", recentVideos=" + recentVideos +
+                '}';
+    }
 }
