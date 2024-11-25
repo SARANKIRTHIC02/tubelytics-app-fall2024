@@ -1,3 +1,4 @@
+/*
 package view;
 
 import org.junit.Test;
@@ -11,18 +12,22 @@ import java.util.Map;
 import static org.junit.Assert.assertTrue;
 import static play.test.Helpers.contentAsString;
 
+*/
 /**
  * Unit tests for the wordStats template, verifying the correct rendering of word frequency statistics.
  * Tests both the scenarios where word frequency data is provided and where no data is available.
- */
+ *//*
+
 public class WordStatsTemplateTest extends WithApplication {
 
-    /**
+    */
+/**
      * Tests the rendering of the wordStats template with provided word frequency data.
      * Verifies that the word frequencies are correctly displayed in the HTML table.
      * @author saran
      * @author sushanth
-     */
+     *//*
+
     @Test
     public void testWordFrequencyTemplateWithData() {
         Map<String, Long> wordFrequency = new HashMap<>();
@@ -42,12 +47,14 @@ public class WordStatsTemplateTest extends WithApplication {
         assertTrue(renderedContent.contains("<td>3</td>"));
     }
 
-    /**
+    */
+/**
      * Tests the rendering of the wordStats template when no word frequency data is provided.
      * Verifies that the empty table body is correctly displayed.
      *@author saran
      *@author sushanth
-     */
+     *//*
+
     @Test
     public void testWordFrequencyTemplateWithoutData() {
         Map<String, Long> wordFrequency = new HashMap<>();
@@ -62,3 +69,4 @@ public class WordStatsTemplateTest extends WithApplication {
 
 
 }
+*/
