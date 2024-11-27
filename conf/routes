@@ -22,3 +22,4 @@ GET     /channel/:id              controllers.HomeController.channelProfile(id: 
 # Tag-specific analytics
 #GET     /taglytics/:tag              controllers.HomeController.taglytics(tag: String)
 
+GET     /word-stats           controllers.HomeController.wordStats(query: String, sessionId: String)

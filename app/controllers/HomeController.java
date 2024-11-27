@@ -3,18 +3,26 @@ package controllers;
 import actors.ChannelActor;
 import actors.VideoSearchActor;
 import actors.WebSocketActor;
+import actors.WordStatsActor;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
+import akka.pattern.Patterns;
 import akka.stream.Materializer;
+import akka.util.Timeout;
 import model.ChannelProfileResult;
 import model.SearchResponseList;
 
+import model.TubelyticService;
+import model.VideoSearchResult;
 import play.libs.streams.ActorFlow;
 import play.mvc.Controller;
 import play.mvc.Result;
 import play.mvc.WebSocket;
+import scala.compat.java8.FutureConverters;
 
 import javax.inject.Inject;
+import java.io.IOException;
+import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -33,9 +41,11 @@ public class HomeController extends Controller {
         return WebSocket.Text.accept(request -> {
             String sessionId = UUID.randomUUID().toString();
             System.out.println("New WebSocket session created: " + sessionId);
+
             ActorRef videoSearchActor = actorSystem.actorOf(VideoSearchActor.props(), "videoSearchActor-" + sessionId);
             ActorRef channelActor = actorSystem.actorOf(ChannelActor.props(), "channelActor-" + sessionId);
-            return ActorFlow.actorRef(out -> WebSocketActor.props(sessionId, out, videoSearchActor, channelActor), actorSystem, materializer);
+            ActorRef wordStatsActor = actorSystem.actorOf(WordStatsActor.props(), "wordStatsActor-" + sessionId);
+            return ActorFlow.actorRef(out -> WebSocketActor.props(sessionId, out, videoSearchActor, channelActor, wordStatsActor), actorSystem, materializer);
         });
     }
     public CompletionStage<Result> ytlytics() {
@@ -54,5 +64,33 @@ public class HomeController extends Controller {
         return CompletableFuture.completedStage(
                 ok(views.html.channel.render(new ChannelProfileResult(), id))
         );
+    }
+
+    public CompletionStage<Result> wordStats(String query, String sessionId) throws IOException, InterruptedException {
+        ActorRef wordStatsActor = actorSystem.actorOf(WordStatsActor.props(), "wordStatsActor-" + sessionId);
+        List<VideoSearchResult> videoResults = TubelyticService.fetchResults(query);
+
+        CompletionStage<Object> wordStatsFuture = FutureConverters.toJava(
+                Patterns.ask(
+                        wordStatsActor,
+                        new WordStatsActor.VideoSearchResultsMessage(videoResults),
+                        Timeout.create(Duration.ofSeconds(5))
+                )
+        );
+
+        return wordStatsFuture.thenApply(response -> {
+            if (response instanceof Map<?, ?>) {
+                @SuppressWarnings("unchecked")
+                Map<String, Long> wordStats = (Map<String, Long>) response;
+
+                actorSystem.stop(wordStatsActor);
+
+                return ok(views.html.wordStats.render(wordStats));
+            } else {
+                return internalServerError("Unexpected response type: " + response.getClass());
+            }
+        }).exceptionally(ex -> {
+            return internalServerError("Failed to process word statistics: " + ex.getMessage());
+        });
     }
 }
