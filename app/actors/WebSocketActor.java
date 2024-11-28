@@ -3,9 +3,13 @@ package actors;
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.actor.Props;
+import akka.stream.stage.GraphStageLogic;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import model.ChannelProfileResult;
+import model.TubelyticService;
+import model.VideoSearchResult;
 
+import java.util.List;
 import java.util.Map;
 
 public class WebSocketActor extends AbstractActor {
@@ -14,15 +18,18 @@ public class WebSocketActor extends AbstractActor {
     private final ActorRef videoSearchActor;
     private final ActorRef channelActor;
 
-    public static Props props(String sessionId, ActorRef out, ActorRef videoSearchActor, ActorRef channelActor) {
-        return Props.create(WebSocketActor.class, () -> new WebSocketActor(sessionId, out, videoSearchActor, channelActor));
+    private final ActorRef tagActor;
+
+    public static Props props(String sessionId, ActorRef out, ActorRef videoSearchActor, ActorRef channelActor, ActorRef tagActor) {
+        return Props.create(WebSocketActor.class, () -> new WebSocketActor(sessionId, out, videoSearchActor, channelActor, tagActor));
     }
 
-    public WebSocketActor(String sessionId, ActorRef out, ActorRef videoSearchActor, ActorRef channelActor) {
+    public WebSocketActor(String sessionId, ActorRef out, ActorRef videoSearchActor, ActorRef channelActor, ActorRef tagActor) {
         this.sessionId = sessionId;
         this.out = out;
         this.videoSearchActor = videoSearchActor;
         this.channelActor = channelActor;
+        this.tagActor = tagActor;
     }
 
     @Override
@@ -35,7 +42,11 @@ public class WebSocketActor extends AbstractActor {
 
                         // Forward channel request to ChannelActor
                         channelActor.tell(channelId, getSelf());
-                    } else {
+                    } else if (message.startsWith("tag: ")){{
+                        String tag = message.substring("tag:" .length());
+                        System.out.println("WebSocketActor received tag request: " + tag);
+                        tagActor.tell(tag, getSelf());
+                    }
                         System.out.println("WebSocketActor received search query: " + message);
 
                         // Forward search query to VideoSearchActor
@@ -61,4 +72,5 @@ public class WebSocketActor extends AbstractActor {
                 })
                 .build();
     }
+
 }

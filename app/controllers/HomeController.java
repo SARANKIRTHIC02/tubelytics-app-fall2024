@@ -1,6 +1,7 @@
 package controllers;
 
 import actors.ChannelActor;
+import actors.TagActor;
 import actors.VideoSearchActor;
 import actors.WebSocketActor;
 import akka.actor.ActorRef;
@@ -25,6 +26,7 @@ public class HomeController extends Controller {
     private final Materializer materializer;
 
     @Inject
+
     public HomeController(ActorSystem actorSystem, Materializer materializer) {
         this.actorSystem = actorSystem;
         this.materializer = materializer;
@@ -32,10 +34,10 @@ public class HomeController extends Controller {
     public WebSocket ytlyticsWebSocket() {
         return WebSocket.Text.accept(request -> {
             String sessionId = UUID.randomUUID().toString();
-            System.out.println("New WebSocket session created: " + sessionId);
             ActorRef videoSearchActor = actorSystem.actorOf(VideoSearchActor.props(), "videoSearchActor-" + sessionId);
             ActorRef channelActor = actorSystem.actorOf(ChannelActor.props(), "channelActor-" + sessionId);
-            return ActorFlow.actorRef(out -> WebSocketActor.props(sessionId, out, videoSearchActor, channelActor), actorSystem, materializer);
+            ActorRef tagActor = actorSystem.actorOf(TagActor.props(), "tagActor-" + sessionId);
+            return ActorFlow.actorRef(out -> WebSocketActor.props(sessionId, out, videoSearchActor, channelActor, tagActor), actorSystem, materializer);
         });
     }
     public CompletionStage<Result> ytlytics() {
@@ -55,4 +57,5 @@ public class HomeController extends Controller {
                 ok(views.html.channel.render(new ChannelProfileResult(), id))
         );
     }
+    //tags
 }
