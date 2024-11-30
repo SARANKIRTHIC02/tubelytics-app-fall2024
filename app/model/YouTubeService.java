@@ -4,9 +4,10 @@ import Util.HttpUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import java.io.IOException;
+import java.util.stream.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 /**
  *
@@ -27,11 +28,11 @@ public class YouTubeService {
     private static final String videosEndpoint;
 
     static {
-            apiKey = "AIzaSyCGi_3tP5IQdpXajRIe7ycgbkaLLwYWWYs";
-            baseUrl = "https://www.googleapis.com/youtube/v3";
-            searchEndpoint = "/search?part=snippet";
-            channelEndpoint = "/channels?part=snippet,statistics";
-            videosEndpoint = "/videos?part=snippet,statistics";
+        apiKey = "AIzaSyD9in5oNHY606mElHbkymOaLPi-4VTb5XQ";
+        baseUrl = "https://www.googleapis.com/youtube/v3";
+        searchEndpoint = "/search?part=snippet";
+        channelEndpoint = "/channels?part=snippet,statistics";
+        videosEndpoint = "/videos?part=snippet,statistics";
     }
 
     /**
@@ -173,20 +174,26 @@ public class YouTubeService {
      * @author durai
      */
     private static List<VideoSearchResult> parseVideoResults(JsonNode response) {
-        List<VideoSearchResult> results = new ArrayList<>();
-        for (JsonNode item : response.get("items")) {
-            JsonNode snippet = item.get("snippet");
-            String videoId = item.get("id").get("videoId").asText();
-            results.add(new VideoSearchResult(
-                    videoId,
-                    snippet.get("title").asText(),
-                    snippet.get("description").asText(),
-                    snippet.get("thumbnails").get("default").get("url").asText(),
-                    snippet.get("channelId").asText(),
-                    snippet.get("channelTitle").asText(),
-                    null
-            ));
-        }
+        //List<VideoSearchResult> results = new ArrayList<>();
+
+
+        List<VideoSearchResult> results =
+                StreamSupport.stream(response.get("items").spliterator(), false)
+                        .map(item -> {
+                            JsonNode snippet = item.get("snippet");
+                            String videoId = item.get("id").get("videoId").asText();
+                            return new VideoSearchResult(
+                                    videoId,
+                                    snippet.get("title").asText(),
+                                    snippet.get("description").asText(),
+                                    snippet.get("thumbnails").get("default").get("url").asText(),
+                                    snippet.get("channelId").asText(),
+                                    snippet.get("channelTitle").asText(),
+                                    null
+                            );
+                        })
+                        .collect(Collectors.toList());
+
         return results;
     }
 

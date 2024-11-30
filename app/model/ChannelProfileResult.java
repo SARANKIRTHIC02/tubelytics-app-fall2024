@@ -19,6 +19,9 @@ public class ChannelProfileResult {
     private String country;
     private List<VideoSearchResult> recentVideos;
 
+    public ChannelProfileResult() {
+    }
+
     /**
      * Constructor.
      * @param channelId the unique identifier of the YouTube channel.
@@ -117,4 +120,16 @@ public class ChannelProfileResult {
         return country;
     }
 
+    @Override
+    public String toString() {
+        return "ChannelProfileResult{" +
+                "channelId='" + channelId + '\'' +
+                ", channelTitle='" + channelTitle + '\'' +
+                ", channelDescription='" + channelDescription + '\'' +
+                ", subscriberCount=" + subscriberCount +
+                ", channelThumbnailUrl='" + channelThumbnailUrl + '\'' +
+                ", country='" + country + '\'' +
+                ", recentVideos=" + recentVideos +
+                '}';
+    }
 }

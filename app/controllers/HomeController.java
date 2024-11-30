@@ -1,140 +1,96 @@
 package controllers;
 
-import model.*;
-import play.mvc.*;
+import actors.ChannelActor;
+import actors.VideoSearchActor;
+import actors.WebSocketActor;
+import actors.WordStatsActor;
+import akka.actor.ActorRef;
+import akka.actor.ActorSystem;
+import akka.pattern.Patterns;
+import akka.stream.Materializer;
+import akka.util.Timeout;
+import model.ChannelProfileResult;
+import model.SearchResponseList;
 
-import java.util.Optional;
+import model.TubelyticService;
+import model.VideoSearchResult;
+import play.libs.streams.ActorFlow;
+import play.mvc.Controller;
+import play.mvc.Result;
+import play.mvc.WebSocket;
+import scala.compat.java8.FutureConverters;
 
+import javax.inject.Inject;
+import java.io.IOException;
+import java.time.Duration;
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
-/**
- *
- * The Homecontroller class handles various endpoints related to YouTube analytics, such as video
- * searches, tag and word statistics, and channel details.
- *
- * @author saran
- * @author durai
- * @author sushanth
- */
 public class HomeController extends Controller {
 
-    public SearchResponseList accumulatedResults=new SearchResponseList(new ArrayList<>(),UUID.randomUUID().toString());
+    private final ActorSystem actorSystem;
+    private final Materializer materializer;
 
-    /**
-     * Renders the index page.
-     *
-     * @return Rendered index page.
-     */
-    public CompletionStage<Result> index() {
-        return CompletableFuture.supplyAsync(() -> ok(views.html.index.render()));
+    @Inject
+    public HomeController(ActorSystem actorSystem, Materializer materializer) {
+        this.actorSystem = actorSystem;
+        this.materializer = materializer;
     }
+    public WebSocket ytlyticsWebSocket() {
+        return WebSocket.Text.accept(request -> {
+            String sessionId = UUID.randomUUID().toString();
+            System.out.println("New WebSocket session created: " + sessionId);
 
-    /**
-     *
-     * Handles YouTube video search based on a query, accumulates the results,
-     * and returns the analysis of word statistics and search results.
-     * @param query The search query as an optional string.
-     * @return Renders the YouTube analytics page with search results and word statistics.
-     *  @author saran
-     *  @author durai
-     */
-
-    public CompletionStage<Result> ytlytics(Optional<String> query) {
-        System.out.println("Received query: " + query.orElse("none"));
-        String searchQuery = query.orElse("");
-
-        return CompletableFuture.supplyAsync(() -> {
-            List<VideoSearchResult> newResults = TubelyticService.fetchResults(searchQuery);
-            Map<String, Long> wordsFiltered = TubelyticService.wordStatistics(newResults);
-            //System.out.println(wordsFiltered);
-            List<VideoSearchResult> limitedResults = newResults.stream()
-                    .limit(10)
-                    .collect(Collectors.toList());
-
-            SearchResponse model = new SearchResponse(searchQuery, limitedResults);
-            accumulatedResults.getRequestModels().add(0, model);
-            return ok(views.html.ytlytics.render(accumulatedResults, wordsFiltered, searchQuery));
+            ActorRef videoSearchActor = actorSystem.actorOf(VideoSearchActor.props(), "videoSearchActor-" + sessionId);
+            ActorRef channelActor = actorSystem.actorOf(ChannelActor.props(), "channelActor-" + sessionId);
+            ActorRef wordStatsActor = actorSystem.actorOf(WordStatsActor.props(), "wordStatsActor-" + sessionId);
+            return ActorFlow.actorRef(out -> WebSocketActor.props(sessionId, out, videoSearchActor, channelActor, wordStatsActor), actorSystem, materializer);
         });
     }
+    public CompletionStage<Result> ytlytics() {
+        System.out.println("ytlytics line 55");
+        SearchResponseList accumulatedResults = new SearchResponseList(new ArrayList<>(), UUID.randomUUID().toString());
+        Map<String, Long> wordsFiltered = new HashMap<>();
+        String searchQuery = "";
 
-    /**
-     *
-     * Handles YouTube video search based on a query and returns tag statistics for the search results.
-     * @param query The search query.
-     * @return Renders the tag analytics page with tag statistics and search results.
-     * @author durai
-     * @author Saran
-     * @author sushanth
-     */
-    public CompletionStage<Result> taglytics(String query) {
-
-        return CompletableFuture.supplyAsync(() -> {
-            List<VideoSearchResult> newResults = TubelyticService.fetchResults(query);
-            Map<String, Long> wordsFiltered = TubelyticService.wordStatistics(newResults);
-            //System.out.println(wordsFiltered);
-            List<VideoSearchResult> limitedResults = newResults.stream()
-                    .limit(10)
-                    .collect(Collectors.toList());
-
-            SearchResponse model = new SearchResponse(query, limitedResults);
-            return ok(views.html.taglytics.render(model, wordsFiltered));
-        });
+        return CompletableFuture.completedStage(
+                ok(views.html.ytlytics.render(accumulatedResults, wordsFiltered, searchQuery))
+        );
     }
 
-    /**
-     * Retrieves videos from a specific YouTube channel based on the channel ID and renders the channel profile page.
-     *
-     * @param channelId The unique identifier for the YouTube channel.
-     * @return A completion stage that renders the channel profile page with channel details.
-     * @author durai
-     */
-    public CompletionStage<Result> channelVideos(String channelId) {
-        return CompletableFuture.supplyAsync(() -> {
-            ChannelProfileResult channelProfileInfo = TubelyticService.fetchChannelDetails(channelId);
+    public CompletionStage<Result> channelProfile(String id) {
+        System.out.println("Channel Profile....");
+        return CompletableFuture.completedStage(
+                ok(views.html.channel.render(new ChannelProfileResult(), id))
+        );
+    }
 
-            if (channelProfileInfo == null) {
-                return notFound("Channel not found with ID: " + channelId);
+    public CompletionStage<Result> wordStats(String query, String sessionId) throws IOException, InterruptedException {
+        ActorRef wordStatsActor = actorSystem.actorOf(WordStatsActor.props(), "wordStatsActor-" + sessionId);
+        List<VideoSearchResult> videoResults = TubelyticService.fetchResults(query);
+
+        CompletionStage<Object> wordStatsFuture = FutureConverters.toJava(
+                Patterns.ask(
+                        wordStatsActor,
+                        new WordStatsActor.VideoSearchResultsMessage(videoResults),
+                        Timeout.create(Duration.ofSeconds(5))
+                )
+        );
+
+        return wordStatsFuture.thenApply(response -> {
+            if (response instanceof Map<?, ?>) {
+                @SuppressWarnings("unchecked")
+                Map<String, Long> wordStats = (Map<String, Long>) response;
+
+                actorSystem.stop(wordStatsActor);
+
+                return ok(views.html.wordStats.render(wordStats));
+            } else {
+                return internalServerError("Unexpected response type: " + response.getClass());
             }
-
-            return ok(views.html.channelprofile.render(channelProfileInfo));
+        }).exceptionally(ex -> {
+            return internalServerError("Failed to process word statistics: " + ex.getMessage());
         });
     }
-
-    /**
-     * Fetches tags for a specific video based on the video ID and renders the channel profile page.
-     *
-     * @param videoID The unique identifier for the YouTube video.
-     * @return Renders the channel profile page.
-     * @author sushanth
-     * @author durai
-     */
-    public CompletionStage<Result> tags(String videoID){
-        return CompletableFuture.supplyAsync(() -> {
-            ChannelProfileResult channelProfileInfo = TubelyticService.fetchChannelDetails(videoID);
-
-            if (channelProfileInfo == null) {
-                return notFound("Video not found with ID: " + videoID);
-            }
-            return ok(views.html.channelprofile.render(channelProfileInfo));
-        });
-    }
-
-    /**
-     *
-     * Analyzes word statistics based on a search query and renders the word statistics page.
-     * @param searchQuery The search query for which word statistics will be generated.
-     * @return Renders the word statistics page with analyzed word data.
-     * @author durai
-     * @author saran
-     */
-    public CompletionStage<Result> wordStats(String searchQuery) {
-        return CompletableFuture.supplyAsync(() -> {
-            List<VideoSearchResult> newResults = TubelyticService.fetchResults(searchQuery);
-            Map<String, Long> wordsFiltered = TubelyticService.wordStatistics(newResults);
-            return ok(views.html.wordStats.render(wordsFiltered));});
-    }
-
 }

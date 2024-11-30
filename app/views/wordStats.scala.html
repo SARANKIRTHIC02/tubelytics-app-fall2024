@@ -1,63 +1,33 @@
 @import java.util.Map
-@(wordFrequency: Map[String, Long])
+@import java.util.Map.Entry
 
-@main("Word Frequency Statistics") {
-<style>
-    #word-stats {
-        padding: 20px;
-        background-color: #fff;
-        border-radius: 4px;
-        margin-top: 20px;
+@(wordStats: Map[String, Long])
+
+<html>
+<head>
+    <title>Word Statistics</title>
+</head>
+<body>
+<h1>Word Statistics</h1>
+@if(wordStats.isEmpty) {
+<p>No word statistics available.</p>
+} else {
+<table border="1">
+    <thead>
+    <tr>
+        <th>Word</th>
+        <th>Frequency</th>
+    </tr>
+    </thead>
+    <tbody>
+    @for((word: String, frequency: Long) <- wordStats) {
+    <tr>
+        <td>@word</td>
+        <td>@frequency</td>
+    </tr>
     }
-
-    #word-stats h1 {
-        text-align: center;
-        font-size: 1.8em;
-        color: #333;
-        margin-bottom: 20px;
-    }
-
-    #word-stats table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    #word-stats table th,
-    #word-stats table td {
-        padding: 10px;
-        text-align: left;
-        font-size: 1em;
-        border-bottom: 1px solid #ddd;
-    }
-
-    #word-stats table th {
-        background-color: #f2f2f2;
-    }
-
-    #word-stats table tr:hover {
-        background-color: #f9f9f9;
-    }
-</style>
-<section id="word-stats">
-    <div class="wrapper">
-        <h1>Word Frequency Statistics</h1>
-
-        <table border="1">
-            <thead>
-            <tr>
-                <th>Word</th>
-                <th>Frequency</th>
-            </tr>
-            </thead>
-            <tbody>
-            @for((word, count) <- wordFrequency) {
-            <tr>
-                <td>@word</td>
-                <td>@count</td>
-            </tr>
-            }
-            </tbody>
-        </table>
-    </div>
-</section>
+    </tbody>
+</table>
 }
+</body>
+</html>
