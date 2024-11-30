@@ -26,3 +26,12 @@ libraryDependencies += "org.junit.jupiter" % "junit-jupiter-engine" % "5.8.2" % 
 
 libraryDependencies += "org.mockito" % "mockito-core" % "5.2.0" % Test
 libraryDependencies += "org.mockito" % "mockito-junit-jupiter" % "5.2.0" % Test
+
+lazy val akkaVersion = "2.6.21"
+dependencyOverrides ++= Seq(
+  "com.typesafe.akka" %% "akka-actor" % akkaVersion,
+  "com.typesafe.akka" %% "akka-actor-typed" % akkaVersion,
+  "com.typesafe.akka" %% "akka-stream" % akkaVersion,
+  "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
+  "com.typesafe.akka" %% "akka-testkit" % akkaVersion
+)

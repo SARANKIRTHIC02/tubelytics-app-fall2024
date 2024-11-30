@@ -227,4 +227,6 @@ public class HomeControllerTest extends WithApplication {
             assertEquals("Channel not found with ID: " + channelId, responseContent);
         }
     }
+
+
 }

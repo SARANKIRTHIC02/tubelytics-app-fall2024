@@ -3,6 +3,7 @@ package actors;
 import akka.actor.AbstractActor;
 import akka.actor.Props;
 import akka.actor.Status;
+import model.TubelyticService;
 import model.VideoSearchResult;
 
 import java.util.*;
@@ -37,31 +38,9 @@ public class WordStatsActor extends AbstractActor {
     }
 
     private void processVideoResults(List<VideoSearchResult> videoResults) {
-        Map<String, Long> wordStats = calculateWordStats(videoResults);
+        Map<String, Long> wordStats = TubelyticService.wordStatistics(videoResults);
         getSender().tell(wordStats, getSelf());
     }
 
-    private Map<String, Long> calculateWordStats(List<VideoSearchResult> videoResults) {
-        System.out.println("Started word statistics calculation...");
-        long startTime = System.currentTimeMillis();
 
-        Map<String, Long> wordStats = videoResults.stream()
-                .flatMap(result -> Arrays.stream(result.getDescription().split("\\W+")))
-                .map(String::toLowerCase)
-                .filter(word -> !word.isEmpty() && word.matches(".*[a-zA-Z0-9].*")
-                        && (word.length() > 1 || word.equals("i") || word.equals("a")))
-                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
-
-        Map<String, Long> sortedWordStats = wordStats.entrySet().stream()
-                .sorted((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()))
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue,
-                        (e1, e2) -> e1,
-                        LinkedHashMap::new
-                ));
-
-        System.out.println("Finished in " + (System.currentTimeMillis() - startTime) + "ms");
-        return sortedWordStats;
-    }
 }
