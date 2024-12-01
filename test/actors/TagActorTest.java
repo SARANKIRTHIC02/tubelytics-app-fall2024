@@ -5,92 +5,104 @@ import akka.actor.ActorSystem;
 import akka.testkit.javadsl.TestKit;
 import model.TubelyticService;
 import model.VideoSearchResult;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 public class TagActorTest {
-    private static ActorSystem system;
+
+    static ActorSystem system;
 
     @BeforeClass
-    public static void setup() {
-        system = ActorSystem.create("TagActorTestSystem");
+    public static void setupClass() {
+        system = ActorSystem.create("TestSystem");
     }
 
     @AfterClass
-    public static void teardown() {
+    public static void teardownClass() {
         TestKit.shutdownActorSystem(system);
         system = null;
     }
 
     @Test
-    public void testHandleValidTagWithoutAPI() {
-        String testTag = "technology";
-        List<VideoSearchResult> mockResults = new ArrayList<>();
-        mockResults.add(new VideoSearchResult("video1", "Video Title 1", "Description 1", "thumbnail1", "channel1", "Channel 1", null));
-        mockResults.add(new VideoSearchResult("video2", "Video Title 2", "Description 2", "thumbnail2", "channel2", "Channel 2", null));
-        TubelyticService tubelyticServiceMock = mock(TubelyticService.class);
-        when(TubelyticService.fetchResults(testTag)).thenReturn(mockResults);
+    public void testValidTagQuery() {
         new TestKit(system) {{
+            TubelyticService mockService = mock(TubelyticService.class);
+            String testTag = "technology";
+            List<VideoSearchResult> mockResults = IntStream.range(0, 5)
+                    .mapToObj(i -> new VideoSearchResult(
+                            "video" + i, "title" + i, "desc" + i,
+                            "thumb" + i, "channel" + i, "channelTitle" + i, List.of()))
+                    .collect(Collectors.toList());
+            when(TubelyticService.fetchResults(testTag)).thenReturn(mockResults);
             final ActorRef tagActor = system.actorOf(TagActor.props());
             tagActor.tell(testTag, getRef());
-            expectMsg(mockResults);
-            verify(tubelyticServiceMock, times(1)).fetchResults(testTag);
+            List<VideoSearchResult> receivedResults = expectMsgClass(Duration.ofSeconds(5), List.class);
+            assertEquals(5, receivedResults.size());
+            assertEquals(mockResults, receivedResults);
+            verify(mockService, times(1)).fetchResults(testTag);
         }};
     }
 
     @Test
-    public void testHandleEmptyTagWithoutAPI() {
-        String testTag = "";
-        List<VideoSearchResult> mockResults = new ArrayList<>(); // Empty list for empty tag
-        TubelyticService tubelyticServiceMock = mock(TubelyticService.class);
-        when(TubelyticService.fetchResults(testTag)).thenReturn(mockResults);
-        new TestKit(system) {{
+    public void testEmptyTagQuery() {
+        new TestKit(system) {
+            {
+            TubelyticService mockService = mock(TubelyticService.class);
+            String emptyTag = "";
+            List<VideoSearchResult> mockResults = new ArrayList<>();
+            when(TubelyticService.fetchResults(emptyTag)).thenReturn(mockResults);
             final ActorRef tagActor = system.actorOf(TagActor.props());
-            tagActor.tell(testTag, getRef());
-            expectMsg(mockResults);
-            verify(tubelyticServiceMock, times(1)).fetchResults(testTag);
+            tagActor.tell(emptyTag, getRef());
+            List<VideoSearchResult> receivedResults = expectMsgClass(Duration.ofSeconds(5), List.class);
+            assertTrue(receivedResults.isEmpty());
+            verify(mockService, times(1)).fetchResults(emptyTag);
         }};
     }
 
     @Test
-    public void testHandleInvalidCharactersWithoutAPI() {
-        String invalidTag = "!@#$%^&*";
-        TubelyticService tubelyticServiceMock = mock(TubelyticService.class);
-        when(TubelyticService.fetchResults(invalidTag)).thenThrow(new RuntimeException("Invalid input"));
+    public void testInvalidTagQuery() {
         new TestKit(system) {{
+            TubelyticService mockService = mock(TubelyticService.class);
+            String invalidTag = "!@#$%^&*";
+            when(TubelyticService.fetchResults(invalidTag)).thenThrow(new RuntimeException("Invalid tag format"));
             final ActorRef tagActor = system.actorOf(TagActor.props());
             tagActor.tell(invalidTag, getRef());
-            expectMsgClass(akka.actor.Status.Failure.class);
-            verify(tubelyticServiceMock, times(1)).fetchResults(invalidTag);
+            expectMsgClass(Duration.ofSeconds(5), akka.actor.Status.Failure.class);
+            verify(mockService, times(1)).fetchResults(invalidTag);
         }};
     }
 
     @Test
-    public void testHandleConcurrencyWithoutAPI() {
-        // Prepare mock data
-        String tag1 = "tag1";
-        String tag2 = "tag2";
-        List<VideoSearchResult> results1 = new ArrayList<>();
-        results1.add(new VideoSearchResult("video1", "Title1", "Desc1", "thumb1", "channel1", "Channel1", null));
-        List<VideoSearchResult> results2 = new ArrayList<>();
-        results2.add(new VideoSearchResult("video2", "Title2", "Desc2", "thumb2", "channel2", "Channel2", null));
-        TubelyticService tubelyticServiceMock = mock(TubelyticService.class);
-        when(TubelyticService.fetchResults(tag1)).thenReturn(results1);
-        when(TubelyticService.fetchResults(tag2)).thenReturn(results2);
+    public void testConcurrencyWithMultipleTags() {
         new TestKit(system) {{
+            TubelyticService mockService = mock(TubelyticService.class);
+            String tag1 = "tag1";
+            String tag2 = "tag2";
+            List<VideoSearchResult> results1 = List.of(new VideoSearchResult("vid1", "Title1", "Desc1", "Thumb1", "Ch1", "ChTitle1", List.of()));
+            List<VideoSearchResult> results2 = List.of(new VideoSearchResult("vid2", "Title2", "Desc2", "Thumb2", "Ch2", "ChTitle2", List.of()));
+            when(TubelyticService.fetchResults(tag1)).thenReturn(results1);
+            when(TubelyticService.fetchResults(tag2)).thenReturn(results2);
             final ActorRef tagActor = system.actorOf(TagActor.props());
             tagActor.tell(tag1, getRef());
             tagActor.tell(tag2, getRef());
-            expectMsg(results1);
-            expectMsg(results2);
-            verify(tubelyticServiceMock, times(1)).fetchResults(tag1);
-            verify(tubelyticServiceMock, times(1)).fetchResults(tag2);
+            List<VideoSearchResult> receivedResults1 = expectMsgClass(Duration.ofSeconds(5), List.class);
+            assertEquals(results1, receivedResults1);
+
+            List<VideoSearchResult> receivedResults2 = expectMsgClass(Duration.ofSeconds(5), List.class);
+            assertEquals(results2, receivedResults2);
+
+            // Verify the mocked service was called
+            verify(mockService, times(1)).fetchResults(tag1);
+            verify(mockService, times(1)).fetchResults(tag2);
         }};
     }
 }
