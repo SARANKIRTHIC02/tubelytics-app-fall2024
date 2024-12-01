@@ -28,7 +28,7 @@ public class YouTubeService {
     private static final String videosEndpoint;
 
     static {
-        apiKey = "AIzaSyCGi_3tP5IQdpXajRIe7ycgbkaLLwYWWYs";
+        apiKey = "AIzaSyCsAGztE-1uICudsJevrmrRo6loQRqZNaA";
         baseUrl = "https://www.googleapis.com/youtube/v3";
         searchEndpoint = "/search?part=snippet";
         channelEndpoint = "/channels?part=snippet,statistics";

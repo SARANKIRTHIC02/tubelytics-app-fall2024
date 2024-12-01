@@ -11,6 +11,9 @@ public class SearchResponseList {
     private List<SearchResponse> requestModels;
     private String sessionID;
 
+    public SearchResponseList() {
+    }
+
     /**
      *
      * Constructs a SearchResponseList with the specified list of search responses.
