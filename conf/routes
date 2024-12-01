@@ -20,6 +20,6 @@ GET     /channel/:id              controllers.HomeController.channelProfile(id: 
 #GET     /channelVideos/:channelId    controllers.HomeController.channelVideos(channelId: String)
 
 # Tag-specific analytics
-#GET     /taglytics/:tag              controllers.HomeController.taglytics(tag: String)
+GET     /taglytics/:tag              controllers.HomeController.taglytics(tag: String)
 
 GET     /word-stats           controllers.HomeController.wordStats(query: String, sessionId: String)

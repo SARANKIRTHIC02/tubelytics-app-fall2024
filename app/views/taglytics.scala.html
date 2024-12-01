@@ -1,0 +1,98 @@
+@import model.SearchResponseList
+@(models: SearchResponseList, searchQuery: String)
+
+@main("Taglytics") {
+    <head>
+        <title>Taglytics</title>
+        <link rel="stylesheet" type="text/css" href="@routes.Assets.versioned("stylesheets/taglytics.css")">
+    </head>
+
+    <body>
+        <section id="top">
+            <div class="wrapper">
+                <h1>Tag-Based Search Results</h1>
+                <p>Showing results for tag: <span id="tagTitle">@searchQuery</span></p>
+            </div>
+        </section>
+
+        <section id="results">
+            <div class="wrapper">
+                <h2>Tag Search Results</h2>
+                <div id="history">
+                        <!-- Dynamic tag-based search results will be rendered here -->
+                </div>
+            </div>
+        </section>
+
+        <script>
+                // Use existing WebSocket connection
+                const socket = new WebSocket("ws://localhost:9000/ws");
+
+                // Maintain tag-based search results dynamically
+                const historyContainer = document.getElementById("history");
+
+                socket.onopen = () => {
+                    console.log("WebSocket connected for tag search");
+                    socket.send(`tag:${"@searchQuery"}`); // Send the tag query to the WebSocket server
+                };
+
+                socket.onmessage = (event) => {
+                    console.log("Data",event.data);
+                    try {
+                        const parsedData = JSON.parse(event.data);
+                        console.log("after data",parsedData)
+
+                        handleNewSearch(parsedData);
+                    } catch (error) {
+                        console.error("Error parsing WebSocket message:", error);
+                    }
+                };
+
+                socket.onclose = () => console.log("WebSocket closed");
+                socket.onerror = (error) => console.error("WebSocket error:", error);
+
+                // Handle new tag search results and update the UI dynamically
+                function handleNewSearch(parsedData) {
+                    // Clear existing results
+                    historyContainer.innerHTML = "";
+
+                    // Check if parsedData is an array and has elements
+                    if (!Array.isArray(parsedData) || parsedData.length === 0) {
+                        historyContainer.innerHTML = `
+            <div class="no-results">
+                <h3>No videos found for the given tag</h3>
+            </div>
+        `;
+                        return;
+                    }
+
+                    // Process and display each video object
+                    const resultsHtml = parsedData.map((video) => {
+                        return `
+            <li class="result-item">
+                <div class="result-content">
+                    <div class="text-content">
+                        <p>
+                            <b>Video Title:</b>
+                            <a href="https://www.youtube.com/watch?v=${video.videoId}" target="_blank">${video.title}</a><br>
+                            <b>Channel:</b>
+                            <a href="/channel/${video.channelId}" target="_blank">${video.channelTitle || "Unknown Channel"}</a><br>
+                            <b>Description:</b> ${video.description || "No description available"}<br>
+                            <b>Tags:</b>
+                            ${video.tags
+                                ? video.tags.map((tag) => `<a href="/taglytics/${encodeURIComponent(tag)}" target="_blank">${tag}</a>`).join(", ")
+                                : "No tags available"}
+                        </p>
+                    </div>
+                    <img src="${video.thumbnailUrl}" alt="Thumbnail for ${video.title}" class="thumbnail">
+                </div>
+            </li>
+        `;
+                    }).join("");
+
+                    // Add the results to the history container
+                    historyContainer.innerHTML = `<ol>${resultsHtml}</ol>`;
+                }
+        </script>
+    </body>
+}
