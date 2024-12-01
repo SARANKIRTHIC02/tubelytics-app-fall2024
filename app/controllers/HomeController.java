@@ -1,9 +1,6 @@
 package controllers;
 
-import actors.ChannelActor;
-import actors.VideoSearchActor;
-import actors.WebSocketActor;
-import actors.WordStatsActor;
+import actors.*;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.pattern.Patterns;
@@ -42,10 +39,14 @@ public class HomeController extends Controller {
             String sessionId = UUID.randomUUID().toString();
             System.out.println("New WebSocket session created: " + sessionId);
 
-            ActorRef videoSearchActor = actorSystem.actorOf(VideoSearchActor.props(), "videoSearchActor-" + sessionId);
+            ActorRef videoSearchActor = actorSystem.actorOf(VideoSearchActor.props(materializer), "videoSearchActor-" + sessionId);
             ActorRef channelActor = actorSystem.actorOf(ChannelActor.props(), "channelActor-" + sessionId);
             ActorRef wordStatsActor = actorSystem.actorOf(WordStatsActor.props(), "wordStatsActor-" + sessionId);
-            return ActorFlow.actorRef(out -> WebSocketActor.props(sessionId, out, videoSearchActor, channelActor, wordStatsActor), actorSystem, materializer);
+            ActorRef tagActor = actorSystem.actorOf(TagActor.props(), "tagActor-" + sessionId);
+
+
+
+            return ActorFlow.actorRef(out -> WebSocketActor.props(sessionId, out, videoSearchActor, channelActor, wordStatsActor,tagActor), actorSystem, materializer);
         });
     }
     public CompletionStage<Result> ytlytics() {
@@ -92,5 +93,11 @@ public class HomeController extends Controller {
         }).exceptionally(ex -> {
             return internalServerError("Failed to process word statistics: " + ex.getMessage());
         });
+    }
+
+    public CompletionStage<Result> taglytics(String query) {
+        return CompletableFuture.completedStage(
+                ok(views.html.taglytics.render(new SearchResponseList(), query))
+        );
     }
 }
