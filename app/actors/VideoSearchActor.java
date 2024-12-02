@@ -15,18 +15,49 @@ import model.VideoSearchResult;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * VideoSearchActor is responsible for handling video search queries and streaming
+ * the search results. It maintains a stream of results for each active search query.
+ * Results are fetched periodically and streamed to the client.
+ *
+ * @author Durai
+ * @author Saran
+ */
 public class VideoSearchActor extends AbstractActor {
     private final Map<String, SourceQueueWithComplete<List<VideoSearchResult>>> activeQueries = new HashMap<>();
     private final Materializer materializer;
 
+    /**
+     * Creates a new VideoSearchActor.
+     *
+     * @param materializer the materializer to be used for Akka streams
+     * @return the {@code Props} for creating the actor
+     * @author Durai
+     * @author Saran
+     */
     public static Props props(Materializer materializer) {
         return Props.create(VideoSearchActor.class, () -> new VideoSearchActor(materializer));
     }
 
+    /**
+     * Initializes the VideoSearchActor with the provided materializer.
+     *
+     * The materializer to be used for Akka streams
+     * @author Durai
+     * @author Saran
+     */
     public VideoSearchActor(Materializer materializer) {
         this.materializer = materializer;
     }
 
+    /**
+     * Defines the behavior of the VideoSearchActor when it receives messages.
+     * It starts a new stream for a search query if not already active and streams the results.
+     *
+     * @return the behavior of the actor
+     * @author Durai
+     * @author Saran
+     */
     @Override
     public Receive createReceive() {
         return receiveBuilder()
@@ -44,6 +75,15 @@ public class VideoSearchActor extends AbstractActor {
                 .build();
     }
 
+    /**
+     * Starts a stream for a given search query. The stream will periodically fetch
+     * results and send them to the client.
+     *
+     * @param query  the search query to stream results for
+     * @param sender the actor to which the results will be sent
+     * @author Durai
+     * @author Saran
+     */
     private void startStream(String query, ActorRef sender) {
         SourceQueueWithComplete<List<VideoSearchResult>> queue =
                 Source.<List<VideoSearchResult>>queue(10, OverflowStrategy.backpressure())
@@ -67,6 +107,16 @@ public class VideoSearchActor extends AbstractActor {
         );
     }
 
+    /**
+     * Fetches results for a given search query and offers them to the stream.
+     * Results are sent to the client through the code sender actor.
+     *
+     * @param query  the search query to fetch results for
+     * @param queue  the queue used to stream results
+     * @param sender the actor to which the results will be sent
+     * @author Durai
+     * @author Saran
+     */
     private void fetchResults(String query, SourceQueueWithComplete<List<VideoSearchResult>> queue, ActorRef sender) {
         CompletableFuture.supplyAsync(() -> TubelyticService.fetchResults(query))
                 .thenAccept(results -> {
@@ -86,6 +136,12 @@ public class VideoSearchActor extends AbstractActor {
                 });
     }
 
+    /**
+     * Cleans up any active streams and resources when the actor stops.
+     *
+     * @author Durai
+     * @author Saran
+     */
     @Override
     public void postStop() {
         activeQueries.values().forEach(SourceQueueWithComplete::complete);
@@ -93,10 +149,24 @@ public class VideoSearchActor extends AbstractActor {
         System.out.println("[VideoSearchActor] Stopped and cleared active streams.");
     }
 
+
+    /**
+     * Represents a search query and the actor to which results should be sent.
+     * @author Durai
+     * @author Saran
+     */
     public static class SearchQuery {
         public final String query;
         public final ActorRef sender;
 
+        /**
+         * Creates a new SearchQuery.
+         *
+         * @param query  the search query
+         * @param sender the actor to send results to
+         * @author Durai
+         * @author Saran
+         */
         public SearchQuery(String query, ActorRef sender) {
             this.query = query;
             this.sender = sender;
