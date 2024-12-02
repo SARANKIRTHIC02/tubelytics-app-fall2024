@@ -38,6 +38,12 @@ public class WebSocketActor extends AbstractActor {
     /**
      * Creates a new {@code WebSocketActor}.
      * @return the {@code Props} for creating the actor
+     * @param sessionId sessionID
+     * @param out out ref
+     * @param videoSearchActor videosearchactor ref
+     * @param channelActor channel actor ref
+     * @param wordStatsActor wordstatsref
+     * @param tagActor tagactor ref
      * @author Durai
      * @author Saran
      */
