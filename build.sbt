@@ -1,3 +1,5 @@
+import org.jacoco.core.JaCoCo
+
 name := """tubelytics-app-fall2024"""
 organization := "com.app.fall2024.tubelytics"
 
@@ -8,6 +10,7 @@ lazy val root = (project in file(".")).enablePlugins(PlayJava)
 scalaVersion := "2.13.15"
 
 libraryDependencies += guice
+
 libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-streams" % play.core.PlayVersion.current,
   "com.typesafe.akka" %% "akka-actor-typed" % "2.6.20",
@@ -26,3 +29,38 @@ libraryDependencies += "org.junit.jupiter" % "junit-jupiter-engine" % "5.8.2" % 
 
 libraryDependencies += "org.mockito" % "mockito-core" % "5.2.0" % Test
 libraryDependencies += "org.mockito" % "mockito-junit-jupiter" % "5.2.0" % Test
+
+// Add Mockito core and inline dependencies
+libraryDependencies ++= Seq(
+  "org.mockito" % "mockito-core" % "5.2.0" % Test,
+  "org.mockito" % "mockito-inline" % "5.2.0" % Test
+)
+
+
+lazy val akkaVersion = "2.6.21"
+dependencyOverrides ++= Seq(
+  "com.typesafe.akka" %% "akka-actor" % akkaVersion,
+  "com.typesafe.akka" %% "akka-actor-typed" % akkaVersion,
+  "com.typesafe.akka" %% "akka-stream" % akkaVersion,
+  "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
+  "com.typesafe.akka" %% "akka-testkit" % akkaVersion
+)
+
+// Include or exclude specific classes (optional)
+jacocoExcludes := Seq(
+  "**/routes/**", // Exclude Play routes
+  "**/Reverse*.class" // Exclude Play reverse routing
+)
+
+libraryDependencies ++= Seq(
+  "org.junit.jupiter" % "junit-jupiter-api" % "5.10.0" % Test,
+  "org.junit.jupiter" % "junit-jupiter-engine" % "5.10.0" % Test
+)
+Test / testOptions += Tests.Argument(TestFrameworks.JUnit, "--junit")
+
+libraryDependencies ++= Seq(
+  "org.junit.jupiter" % "junit-jupiter-api" % "5.10.0" % Test,
+  "org.junit.jupiter" % "junit-jupiter-engine" % "5.10.0" % Test,
+  "org.junit.vintage" % "junit-vintage-engine" % "5.10.0" % Test // Enables JUnit 4 compatibility
+)
+libraryDependencies += "junit" % "junit" % "4.13.2" % Test
