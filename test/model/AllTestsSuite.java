@@ -18,6 +18,7 @@ import org.junit.runners.Suite;
         WebSocketActorTest.class,
         HomeControllerTest.class,
         VideoSearchResultTest.class,
+        TagActorTest.class,
         SearchResponseTest.class
 
 
