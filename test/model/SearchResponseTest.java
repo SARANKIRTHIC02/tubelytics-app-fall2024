@@ -26,8 +26,6 @@ public class SearchResponseTest {
     /**
      * Sets up the test environment for SearchResponse.
      * Initializes a SearchResponse instance with a sample title and a list of mock VideoSearchResult objects.
-     *
-     * @throws Exception if setup fails
      * @author Sushanth
      */
     @Before
