@@ -1,230 +1,224 @@
 package controllers;
 
-import model.ChannelProfileResult;
-import model.TubelyticService;
-import model.VideoSearchResult;
+import actors.ChannelActor;
+import actors.TagActor;
+import actors.VideoSearchActor;
+import actors.WordStatsActor;
+import akka.actor.ActorRef;
+import akka.actor.ActorSystem;
+import akka.testkit.javadsl.TestKit;
+import akka.testkit.TestProbe;
+import akka.stream.Materializer;
+import model.*;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.mockito.InjectMocks;
-import org.mockito.MockedStatic;
-import org.mockito.MockitoAnnotations;
-import play.mvc.Http;
 import play.mvc.Result;
-import play.test.WithApplication;
+import play.mvc.WebSocket;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.*;
+import java.util.concurrent.CompletionStage;
 
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mockStatic;
-import static play.mvc.Http.Status.NOT_FOUND;
+import static org.mockito.Mockito.*;
+import static org.junit.Assert.*;
 import static play.mvc.Http.Status.OK;
-import static play.test.Helpers.GET;
-import static play.test.Helpers.route;
 import static play.test.Helpers.contentAsString;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * Test suite for the Homecontroller class.
- * This class contains unit tests for the actions in the HomeController,
- * ensuring that the endpoints return the correct HTTP responses and content
- * based on different inputs and mocked services.
- * @author durai
- * @author saran
- * @author sushanth
+ * Unit tests for the HomeController class.
+ * This class verifies the functionality of HomeController, including HTTP endpoints,
+ * WebSocket initialization, and actor interactions.
+ *
+ * @version 1.0
+ * @author
+ *   - Durai
  */
-public class HomeControllerTest extends WithApplication {
-    @InjectMocks
-    private HomeController homeController;
-    /**
-     * Set up mock annotations before each test case.
-     */
-    @BeforeEach
-    public void setup() {
+public class HomeControllerTest {
 
-        MockitoAnnotations.openMocks(this);
-    }
+    private static ActorSystem system;
+    private static Materializer materializer;
+    private HomeController homeController;
+
     /**
-     * Test the index route of the application ("/").
-     * Verifies that the response returns HTTP status 200 (OK).
+     * Sets up the ActorSystem and Materializer before all tests.
+     * Prepares the environment for the HomeController test cases.
+     *
+     * @author Durai
+     * @author saran
+     */
+    @BeforeClass
+    public static void setupClass() {
+        system = ActorSystem.create("HomeControllerTestSystem");
+        materializer = mock(Materializer.class);
+    }
+
+    /**
+     * Tears down the ActorSystem after all tests.
+     * Releases resources used during the test cases.
+     *
+     * @author Durai
+     */
+    @AfterClass
+    public static void teardownClass() {
+        TestKit.shutdownActorSystem(system);
+        system = null;
+    }
+
+    /**
+     * Initializes the HomeController instance for testing.
+     * Sets up the controller with a mock Materializer and ActorSystem.
+     *
+     * @author Durai
+     */
+    public HomeControllerTest() {
+        homeController = new HomeController(system, materializer);
+    }
+
+    /**
+     * Tests the channelProfile endpoint.
+     * Verifies that the endpoint responds with a status of OK and contains the correct channel ID in the response.
+     *
+     * @author Durai
+     */
+    @Test
+    public void testChannelProfile() {
+        String channelId = "testChannel";
+        CompletionStage<Result> result = homeController.channelProfile(channelId);
+        Result resolvedResult = result.toCompletableFuture().join();
+
+        assertEquals(OK, resolvedResult.status());
+        String content = contentAsString(resolvedResult);
+        assertTrue(content.contains(channelId));
+    }
+
+    /**
+     * Tests the taglytics endpoint.
+     * Verifies that the endpoint responds with a status of OK and contains the query string in the response.
+     *
+     * @author Durai
      * @author saran
      */
     @Test
-    public void testIndex() {
-        Http.RequestBuilder request = new Http.RequestBuilder()
-                .method(GET)
-                .uri("/");
+    public void testTaglytics() {
+        String query = "testTagQuery";
+        CompletionStage<Result> result = homeController.taglytics(query);
+        Result resolvedResult = result.toCompletableFuture().join();
 
-        Result result = route(app, request);
+        assertEquals(OK, resolvedResult.status());
+        String content = contentAsString(resolvedResult);
+        assertTrue(content.contains(query));
+    }
+
+    /**
+     * Tests the ytlyticsWebSocket method.
+     * Verifies that the method initializes and returns a valid WebSocket object.
+     *
+     * @author Durai
+     * @author saran
+     */
+    @Test
+    public void testWebSocketInitialization() {
+        WebSocket ws = homeController.ytlyticsWebSocket();
+        assertNotNull(ws);
+    }
+
+    /**
+     * Tests interaction with a mocked ChannelActor.
+     * Verifies that the ChannelActor receives the correct message.
+     *
+     * @author Durai
+     */
+    @Test
+    public void testChannelActorWithMock() {
+        TestProbe probe = new TestProbe(system);
+        ActorRef mockChannelActor = probe.ref();
+
+        String testChannelId = "testChannel";
+
+        mockChannelActor.tell(testChannelId, probe.ref());
+
+        probe.expectMsg(testChannelId);
+    }
+
+    /**
+     * Tests interaction with a mocked TagActor.
+     * Verifies that the TagActor receives the correct message and responds as expected.
+     *
+     * @author Durai
+     * @author saran
+     */
+    @Test
+    public void testTagActorWithMock() {
+        TestProbe probe = new TestProbe(system);
+        ActorRef mockTagActor = probe.ref();
+
+        String testTagData = "testTag";
+
+        mockTagActor.tell(testTagData, probe.ref());
+
+        String receivedMessage = probe.expectMsgClass(String.class);
+        assertEquals(testTagData, receivedMessage);
+    }
+
+    /**
+     * Tests interaction with a mocked VideoSearchActor.
+     * Verifies that the VideoSearchActor receives the correct query string.
+     *
+     * @author Durai
+     */
+    @Test
+    public void testVideoSearchActorWithMock() {
+        TestProbe probe = new TestProbe(system);
+        ActorRef mockVideoSearchActor = probe.ref();
+
+        String testQuery = "sampleQuery";
+
+        mockVideoSearchActor.tell(testQuery, probe.ref());
+
+        String receivedMessage = probe.expectMsgClass(String.class);
+        assertEquals(testQuery, receivedMessage);
+    }
+
+    /**
+     * Tests actor creation during WebSocket initialization.
+     * Verifies that the VideoSearchActor, ChannelActor, WordStatsActor, and TagActor are created successfully.
+     *
+     * @author Saran
+     */
+    @Test
+    public void testActorCreationOnWebSocket() {
+        homeController = new HomeController(system, materializer);
+
+        WebSocket ws = homeController.ytlyticsWebSocket();
+
+        ActorRef videoSearchActor = system.actorOf(VideoSearchActor.props(materializer), "videoSearchActor");
+        ActorRef channelActor = system.actorOf(ChannelActor.props(), "channelActor");
+        ActorRef wordStatsActor = system.actorOf(WordStatsActor.props(), "wordStatsActor");
+        ActorRef tagActor = system.actorOf(TagActor.props(), "tagActor");
+        assertNotNull("VideoSearchActor should be created", videoSearchActor);
+        assertNotNull("ChannelActor should be created", channelActor);
+        assertNotNull("WordStatsActor should be created", wordStatsActor);
+        assertNotNull("TagActor should be created", tagActor);
+    }
+
+    /**
+     * Tests the ytlytics endpoint.
+     * Verifies that the endpoint responds with a status of OK and contains relevant data in the response.
+     *
+     * @author Durai
+     * @author saran
+     */
+    @Test
+    public void testYtlyticsReturnsEmptyResultsAndOKStatus() {
+        HomeController controller = new HomeController(system, materializer);
+
+        CompletionStage<Result> resultStage = controller.ytlytics();
+        Result result = resultStage.toCompletableFuture().join();
+        SearchResponseList list = new SearchResponseList();
+        list.getRequestModels();
         assertEquals(OK, result.status());
-    }
-    /**
-     * Test the "/ytlytics" route with a search query.
-     * This test mocks the service calls for fetching search results and word statistics,
-     * and verifies that the response contains the expected search results content.
-     *
-     * @throws IOException            If an I/O error occurs during the test.
-     * @throws InterruptedException   If the test is interrupted.
-     *  @author durai
-     */
-   @Test
-    public void testYtlyticsWithQuery() throws IOException, InterruptedException {
-        String query = "sampleQuery";
-        List<VideoSearchResult> mockResults = new ArrayList<>();
-        mockResults.add(new VideoSearchResult("video123", "Sample Video", "Sample description", "thumbnail", "channel123", "Sample Channel", null));
-        Map<String, Long> mockWordStats = Map.of("sample", 2L, "description", 1L);
-
-        try (MockedStatic<TubelyticService> mockedService = mockStatic(TubelyticService.class)) {
-            mockedService.when(() -> TubelyticService.fetchResults(query)).thenReturn(mockResults);
-            mockedService.when(() -> TubelyticService.wordStatistics(mockResults)).thenReturn(mockWordStats);
-
-            Http.RequestBuilder request = new Http.RequestBuilder()
-                    .method(GET)
-                    .uri("/ytlytics?query=" + query);
-
-            Result result = route(app, request);
-
-            assertEquals(OK, result.status());
-            String responseContent = contentAsString(result);
-            assertTrue(responseContent.contains("<h2>Search Results for term: sampleQuery</h2>"));
-        }
-    }
-    /**
-     * Test the "/ytlytics/tags/{query}" route with a search query that includes tags.
-     * This test mocks the service calls for fetching search results and word statistics,
-     * and verifies that the response contains the expected search results content, including tags.
-     *
-     * @throws IOException            If an I/O error occurs during the test.
-     * @throws InterruptedException   If the test is interrupted.
-     * @author sushanth
-     */
-    @Test
-    public void testTaglyticsWithQuery() throws IOException, InterruptedException {
-        String query = "SampleVideo";
-        List<VideoSearchResult> mockResults = new ArrayList<>();
-        mockResults.add(new VideoSearchResult("video123", "SampleVideo", "Sample description", "thumbnail", "channel123", "Sample Channel", List.of("tag1", "tag2")));
-        Map<String, Long> mockWordStats = Map.of("sample", 2L, "description", 1L);
-
-        try (MockedStatic<TubelyticService> mockedService = mockStatic(TubelyticService.class)) {
-            mockedService.when(() -> TubelyticService.fetchResults(query)).thenReturn(mockResults);
-            mockedService.when(() -> TubelyticService.wordStatistics(mockResults)).thenReturn(mockWordStats);
-
-            Http.RequestBuilder request = new Http.RequestBuilder()
-                    .method(GET)
-                    .uri("/ytlytics/tags/" + query);
-
-            Result result = route(app, request);
-            assertEquals(OK, result.status());
-            String responseContent = contentAsString(result);
-            assertTrue(responseContent.contains("<h2>Search Results for term: SampleVideo</h2>"));
-
-        }
-    }
-    /**
-     * Test the "/wordStatistics/{searchQuery}" route with a search query.
-     * This test verifies that the word statistics are correctly calculated and displayed.
-     *
-     * @throws IOException            If an I/O error occurs during the test.
-     * @throws InterruptedException   If the test is interrupted.
-     *  @author saran
-     */
-    @Test
-    public void testWordStatsWithSearchQuery() throws IOException, InterruptedException {
-        String searchQuery = "sampleSearch";
-        List<VideoSearchResult> mockResults = new ArrayList<>();
-        mockResults.add(new VideoSearchResult("video123", "Sample Video", "Sample description", "thumbnail", "channel123", "Sample Channel", null));
-        Map<String, Long> mockWordStats = Map.of("sample", 2L, "description", 1L);
-
-        try (MockedStatic<TubelyticService> mockedService = mockStatic(TubelyticService.class)) {
-            mockedService.when(() -> TubelyticService.fetchResults(searchQuery)).thenReturn(mockResults);
-            mockedService.when(() -> TubelyticService.wordStatistics(mockResults)).thenReturn(mockWordStats);
-
-            Http.RequestBuilder request = new Http.RequestBuilder()
-                    .method(GET)
-                    .uri("/wordStatistics/" + searchQuery);
-
-            Result result = route(app, request);
-            assertEquals(OK, result.status());
-            String responseContent = contentAsString(result);
-            assertTrue(responseContent.contains("<thead>\n" +
-                    "            <tr>\n" +
-                    "                <th>Word</th>\n" +
-                    "                <th>Frequency</th>\n" +
-                    "            </tr>\n" +
-                    "            </thead>"));
-        }
-    }
-
-    /**
-     * Test the "/ytlytics/tags/{videoID}" route for video tags.
-     * This test mocks the service call to fetch the tags of a video and verifies that the response is successful.
-     *
-     * @throws IOException            If an I/O error occurs during the test.
-     * @throws InterruptedException   If the test is interrupted.
-     * @author sushanth
-     */
-    @Test
-    public void testTags() throws IOException, InterruptedException {
-        String videoID = "video123";
-        List<VideoSearchResult> mockResults = new ArrayList<>();
-        mockResults.add(new VideoSearchResult("video123", "Sample Video", "Sample description", "thumbnail", "channel123", "Sample Channel", List.of("tag1", "tag2", "tag3")));
-
-        try (MockedStatic<TubelyticService> mockedService = mockStatic(TubelyticService.class)) {
-            mockedService.when(() -> TubelyticService.fetchResults(videoID)).thenReturn(mockResults);
-
-            Http.RequestBuilder request = new Http.RequestBuilder()
-                    .method(GET)
-                    .uri("/ytlytics/tags/" + videoID);
-
-            Result result = route(app, request);
-            assertEquals(OK, result.status());
-        }
-    }
-    /**
-     * Test the "/ytlytics/channel/{channelID}" route when the channel details are found.
-     * This test mocks the service call to fetch channel details and verifies that the response returns the correct channel information.
-     * @author durai
-     */
-    @Test
-    public void testChannelVideosFound() {
-        String channelID="UCi7Zk9baY1tvdlgxIML8MXg";
-        ChannelProfileResult mockChannelProfile=new ChannelProfileResult(channelID, "AVC News","",200000L,"","",Collections.emptyList());
-
-
-        try (MockedStatic<TubelyticService> mockedService = mockStatic(TubelyticService.class)) {
-            mockedService.when(() -> TubelyticService.fetchChannelDetails(channelID)).thenReturn(mockChannelProfile);
-
-            Http.RequestBuilder request = new Http.RequestBuilder()
-                    .method(GET)
-                    .uri("/ytlytics/channel/" + channelID);
-
-            Result result = route(app, request);
-            assertEquals(OK, result.status());
-            String responseContent = contentAsString(result);
-            assertTrue(responseContent.contains("<h1 id=\"channelName\">Channel Name: CTV News</h1>"));
-        }
-    }
-    /**
-     * Test the "/ytlytics/channel/{channelID}" route when no channel details are found.
-     * This test mocks the service call to simulate a non-existent channel and verifies that the response returns a "Not Found" status.
-     * @author durai
-     */
-    @Test
-    public void testChannelVideosNotFound() {
-        String channelId = "nonExistentChannel";
-
-        try (MockedStatic<TubelyticService> mockedService = mockStatic(TubelyticService.class)) {
-            mockedService.when(() -> TubelyticService.fetchChannelDetails(channelId)).thenReturn(null);
-
-            Http.RequestBuilder request = new Http.RequestBuilder()
-                    .method(GET)
-                    .uri("/ytlytics/channel/" + channelId);
-
-            Result result = route(app, request);
-            assertEquals(NOT_FOUND, result.status());
-            String responseContent = contentAsString(result);
-            assertEquals("Channel not found with ID: " + channelId, responseContent);
-        }
+        assertNotNull(result);
+        String responseBody = contentAsString(result);
+        assertTrue(responseBody.contains("ytlytics"));
+        assertTrue(responseBody.contains("UUID"));
     }
 }

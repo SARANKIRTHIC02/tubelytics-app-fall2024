@@ -37,6 +37,21 @@ public class VideoSearchResult {
         this.videoUrl="https://www.youtube.com/watch?v="+this.videoId;
     }
 
+    /**
+     *
+     * Constructor.
+     *
+     * @param videoId       The unique ID of the video.
+     * @param title         The title of the video.
+     * @param description   A brief description of the video.
+     *    @author durai
+     *    @author Durai
+     */
+    public VideoSearchResult(String videoId, String title, String description) {
+        this.videoId = videoId;
+        this.title = title;
+        this.description = description;
+    }
 
     /**
      *

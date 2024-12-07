@@ -88,3 +88,40 @@ button:hover {
 #wordStat{
 margin-left:30px;
 }
+
+.search-entry {
+    margin-bottom: 30px;
+    padding: 15px;
+    border-bottom: 2px solid #ccc;
+}
+
+.result-item {
+    margin: 15px 0;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.result-content {
+    display: flex;
+    align-items: flex-start;
+}
+
+.text-content {
+    margin-right: 20px;
+}
+
+.thumbnail {
+    max-width: 150px;
+    height: auto;
+    border-radius: 5px;
+}
+
+.tag-link {
+    margin-right: 5px;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.tag-link:hover {
+    text-decoration: underline;
+}

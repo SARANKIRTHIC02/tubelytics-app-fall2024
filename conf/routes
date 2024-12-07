@@ -1,16 +1,25 @@
 # Routes
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
-
-# An example controller showing a sample home page
-GET     /                           controllers.HomeController.index()
+# Home Controller
+# Serve the WebSocket server
+GET     /ws                controllers.HomeController.ytlyticsWebSocket
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
 
-GET     /ytlytics          controllers.HomeController.ytlytics(query: java.util.Optional[String])
+# WebSocket endpoint for real-time communication
+GET     /ytlytics       controllers.HomeController.ytlytics
+GET     /channel/:id              controllers.HomeController.channelProfile(id: String)
 
-GET     /ytlytics/channel/:channelId      controllers.HomeController.channelVideos(channelId: String)
-GET     /wordStatistics/:searchQuery controllers.HomeController.wordStats(searchQuery)
-GET     /ytlytics/tags/:query  controllers.HomeController.taglytics(query: String)
 
+# Word statistics for a specific search query
+#GET     /wordStats/:query            controllers.HomeController.wordStats(query: String)
+
+# Videos from a specific channel
+#GET     /channelVideos/:channelId    controllers.HomeController.channelVideos(channelId: String)
+
+# Tag-specific analytics
+GET     /taglytics/:tag              controllers.HomeController.taglytics(tag: String)
+
+GET     /word-stats           controllers.HomeController.wordStats(query: String, sessionId: String)

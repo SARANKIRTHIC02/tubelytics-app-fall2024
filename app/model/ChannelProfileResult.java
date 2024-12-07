@@ -19,6 +19,9 @@ public class ChannelProfileResult {
     private String country;
     private List<VideoSearchResult> recentVideos;
 
+    public ChannelProfileResult() {
+    }
+
     /**
      * Constructor.
      * @param channelId the unique identifier of the YouTube channel.
@@ -28,7 +31,7 @@ public class ChannelProfileResult {
      * @param channelThumbnailUrl the URL of the channel's thumbnail image.
      * @param country the country where the channel is based, if available.
      * @param recentVideos a list of recent videos published by the channel.
-     *                     @author durai
+     * @author durai
      */
     public ChannelProfileResult(String channelId, String channelTitle, String channelDescription, Long subscriberCount,
                                 String channelThumbnailUrl, String country, List<VideoSearchResult> recentVideos) {
@@ -116,5 +119,4 @@ public class ChannelProfileResult {
     public String getCountry(){
         return country;
     }
-
 }

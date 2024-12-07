@@ -3,28 +3,24 @@ package model;
 import Util.HttpUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 import java.io.IOException;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import static org.mockito.ArgumentMatchers.anyString;
-@ExtendWith(MockitoExtension.class)
-public class YouTubeServiceTest {
-    private static ObjectMapper objectMapper;
 
-    /**
-     * Initializes the ObjectMapper before each test.
-     * @author durai
-     */
-    @BeforeEach
-    public void setUp() {
-        objectMapper = new ObjectMapper();
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.ArgumentMatchers.anyString;
+
+public class YouTubeServiceTest {
+    @After
+    public void tearDown() {
+        Mockito.framework().clearInlineMocks();
     }
 
     /**
@@ -44,16 +40,17 @@ public class YouTubeServiceTest {
                 "\"thumbnails\": { \"default\": { \"url\": \"testUrl\" } }, " +
                 "\"channelId\": \"testChannelId\", \"channelTitle\": \"Test Channel\"} } ] }";
 
+        ObjectMapper objectMapper=new ObjectMapper();
         JsonNode mockResponse = objectMapper.readTree(mockApiResponse);
 
         try (MockedStatic<HttpUtils> mockedHttpUtils = Mockito.mockStatic(HttpUtils.class)) {
             mockedHttpUtils.when(() -> HttpUtils.sendRequest(anyString())).thenReturn(mockResponse);
 
             List<VideoSearchResult> results = YouTubeService.searchVideosBasedOnQuery("test_query");
-            Assert.assertNotNull(results);
-            Assert.assertEquals(results.size(), 1);
-            Assert.assertEquals("testVideoID", results.get(0).getVideoId());
-            Assert.assertEquals("Test Title", results.get(0).getTitle());
+            assertNotNull(results);
+            assertEquals(results.size(), 1);
+            assertEquals("testVideoID", results.get(0).getVideoId());
+            assertEquals("Test Title", results.get(0).getTitle());
         }
     }
 
@@ -70,8 +67,8 @@ public class YouTubeServiceTest {
         try (MockedStatic<HttpUtils> mockedHttpUtils = Mockito.mockStatic(HttpUtils.class)) {
             mockedHttpUtils.when(() -> HttpUtils.sendRequest(anyString())).thenReturn(null);
             List<VideoSearchResult> results = YouTubeService.searchVideosBasedOnQuery("test query");
-            Assert.assertNotNull(results);
-            Assert.assertEquals(0, results.size());
+            assertNotNull(results);
+            assertEquals(0, results.size());
         }
     }
 
@@ -92,6 +89,7 @@ public class YouTubeServiceTest {
                 " \"statistics\": { \"subscriberCount\": \"1000\" } } ] }";
         String mockVideoApiResponse = "{ \"items\": [ { \"id\": { \"videoId\": \"testVideoId\" }, \"snippet\": { \"title\": \"Test Video\", \"description\": \"Test Description\", \"thumbnails\": { \"default\": { \"url\": \"testVideoThumbnailUrl\" } }, \"channelId\": \"testChannelId\", \"channelTitle\": \"Test Channel Title\" } } ] }";
 
+        ObjectMapper objectMapper=new ObjectMapper();
         JsonNode mockChannelResponse = objectMapper.readTree(mockChannelApiResponse);
         JsonNode mockVideoResponse = objectMapper.readTree(mockVideoApiResponse);
 
@@ -101,14 +99,16 @@ public class YouTubeServiceTest {
 
             ChannelProfileResult profile = YouTubeService.getChannelProfile("testChannelId");
 
-            Assert.assertNotNull(profile);
-            Assert.assertEquals("testChannelId", profile.getChannelId());
+            assertNotNull(profile);
+            assertEquals("testChannelId", profile.getChannelId());
             List<VideoSearchResult> recentVideos = profile.getRecentVideos();
-            Assert.assertNotNull(recentVideos);
-            Assert.assertEquals(1, recentVideos.size());
+            assertNotNull(recentVideos);
+            assertEquals("testChannelId",recentVideos.get(0).getChannelId());
+            assertEquals(1, recentVideos.size());
 
         }
     }
+
 
     /**
      * Tests getChannelProfile with an empty response for a non-existent channel.
@@ -131,5 +131,4 @@ public class YouTubeServiceTest {
             Assert.assertNull(profile);
         }
     }
-
 }
