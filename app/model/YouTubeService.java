@@ -28,7 +28,7 @@ public class YouTubeService {
     private static final String videosEndpoint;
 
     static {
-        apiKey = "AIzaSyCsAGztE-1uICudsJevrmrRo6loQRqZNaA";
+        apiKey = "AIzaSyD9in5oNHY606mElHbkymOaLPi-4VTb5XQ";
         baseUrl = "https://www.googleapis.com/youtube/v3";
         searchEndpoint = "/search?part=snippet";
         channelEndpoint = "/channels?part=snippet,statistics";
@@ -126,6 +126,8 @@ public class YouTubeService {
         if (!response.has("items") || response.get("items").isEmpty()) {
             return null;
         }
+        System.out.println("Test");
+        System.out.println(response.get("items").get(0));
 
         JsonNode channel = response.get("items").get(0);
         JsonNode snippet = channel.get("snippet");

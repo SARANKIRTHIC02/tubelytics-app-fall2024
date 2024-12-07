@@ -5,12 +5,33 @@ import akka.actor.Props;
 import model.ChannelProfileResult;
 import model.TubelyticService;
 
+/**
+ * ChannelActor handles requests to fetch details for a YouTube channel.
+ * using the TubelyticService.
+ *
+ * @author Durai
+ * @author Saran
+ */
 public class ChannelActor extends AbstractActor {
 
+    /**
+     * Creates a new ChannelActor.
+     *
+     * @return the Props for creating the actor
+     * @author Durai
+     * @author Saran
+     */
     public static Props props() {
         return Props.create(ChannelActor.class);
     }
 
+    /**
+     * Defines the behavior of the {@code ChannelActor} when it receives messages.
+     *
+     * @return the behavior of the actor
+     * @author Durai
+     * @author Saran
+     */
     @Override
     public Receive createReceive() {
         return receiveBuilder()

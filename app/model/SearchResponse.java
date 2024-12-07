@@ -46,6 +46,4 @@ public class SearchResponse {
     public List<VideoSearchResult> getResults() {
         return results;
     }
-
-
 }
